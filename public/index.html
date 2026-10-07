@@ -654,7 +654,7 @@ function detailsTab(i){
   <div class="card sec fin mb16"><div class="sh">Final approval</div><div class="sb"><div class="signs" style="grid-template-columns:1fr">${signBox("HOD / Registrar",sg.fin,i.stage==="REJECTED"?"Rejected":"Not approved yet")}</div></div></div>
   ${showPO?`<div class="card sec fin"><div class="sh">Purchase order ${i.po?`<span class="chip c-solidgreen">${esc(i.po)}</span>`:i.poData?`<span class="chip c-green">Filled</span>`:`<span class="chip c-gray">Not filled</span>`}</div><div class="sb">
     ${i.poData?kv([["PO date",esc(i.poData.date)],["Supplier (M/s)",esc(i.poData.vendor)],["Deliver to",esc(i.poData.deliverTo)],["Deliver by",esc(i.poData.deliveryBy)],["Payment terms",esc(i.poData.payment)],["Other terms",esc(i.poData.terms)],["Filled by",esc(PEOPLE[i.poData.by]?PEOPLE[i.poData.by].name:"Purchase")] ]):`<div class="muted">Purchase fills the PO form after final approval.</div>`}
-    <div class="signs">${signBox("OA/JA/SA",(sg.po||{}).p_low,"Skipped or pending")}${signBox("JS/Supdt.",(sg.po\vert{}\vert{}{}).p_mid,"Skipped or pending")}${signBox("AR/DR/JR",(sg.po||{}).p_top,"Pending")}</div></div></div>`:""}`;
+    <div class="signs">${signBox("OA/JA/SA",(sg.po||{}).p_low,"Skipped or pending")}${signBox("JS/Supdt.",(sg.po||{}).p_mid,"Skipped or pending")}${signBox("AR/DR/JR",(sg.po||{}).p_top,"Pending")}</div></div></div>`:""}`;
 }
 function docsTab(i){
   return `<div class="card"><div class="sh sec" style="padding:12px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center"><b style="font-family:var(--serif);color:var(--navy)">Attached documents</b>
@@ -663,7 +663,7 @@ function docsTab(i){
 }
 function historyTab(i){
   const cls={g:"g",o:"o",r:"r",y:""};
-  return `<div class="card"><ol class="tl">${[...i.history].reverse().map(h=>{const p=PEOPLE[h.pid]||{name:"User",desig:""};return `<li class="${cls[h.type]\vert{}\vert{}""}"><div><b>${esc(p.name)}</b> <span class="muted small">${esc(p.desig)}</span></div>
+  return `<div class="card"><ol class="tl">${[...i.history].reverse().map(h=>{const p=PEOPLE[h.pid]||{name:"User",desig:""};return `<li class="${cls[h.type]||""}"><div><b>${esc(p.name)}</b> <span class="muted small">${esc(p.desig)}</span></div>
    <div>${esc(h.text)}</div>${h.remark?`<div class="rem">${esc(h.remark)}</div>`:""}<div class="xs muted mt8">${fmt(h.t)}</div></li>`}).join("")}</ol></div>`;
 }
 
@@ -810,7 +810,7 @@ function generatePO(i,r){
 }
 
 /* ---- fill form views ---- */
-const ff=(label,name,val,o={})=>`<div class="field"><label class="lbl ${o.req?"req":""}">${label}</label>${o.area?`<textarea class="txt" data-ff="${name}" ${o.dis?"disabled":""} placeholder="${esc(o.ph\vert{}\vert{}"")}">${esc(val)}</textarea>`:`<input class="inp" data-ff="${name}" type="${o.type||"text"}" ${o.type==="number"?'min="0"':""} ${o.dis||o.ro?(o.dis?"disabled":"readonly"):""} value="${esc(val)}" placeholder="${esc(o.ph||"")}">`}<div class="err">${esc(o.err||"This field is required.")}</div></div>`;
+const ff=(label,name,val,o={})=>`<div class="field"><label class="lbl ${o.req?"req":""}">${label}</label>${o.area?`<textarea class="txt" data-ff="${name}" ${o.dis?"disabled":""} placeholder="${esc(o.ph||"")}">${esc(val)}</textarea>`:`<input class="inp" data-ff="${name}" type="${o.type||"text"}" ${o.type==="number"?'min="0"':""} ${o.dis||o.ro?(o.dis?"disabled":"readonly"):""} value="${esc(val)}" placeholder="${esc(o.ph||"")}">`}<div class="err">${esc(o.err||"This field is required.")}</div></div>`;
 const chkf=(name,label,on,dis)=>`<label class="chk"><input type="checkbox" data-ff="${name}" ${on?"checked":""} ${dis?"disabled":""}><span>${label}</span></label>`;
 
 function secAcct(d,dis,i){
@@ -867,7 +867,7 @@ function initFill(){
 function saveFillData(){
   const i=byId(S.id), sec=ST[i.stage].sec;
   if(sec==="acct"){
-    const h=$('[data-ff="head"]').value.trim(), s=parseFloat($('[data-ff="sanctioned"]').value)||0, a=parseFloat($('[data-ff="available"]').value)\vert{}\vert{}0, b=parseFloat($('[data-ff="booked"]').value)||0;
+    const h=$('[data-ff="head"]').value.trim(), s=parseFloat($('[data-ff="sanctioned"]').value)||0, a=parseFloat($('[data-ff="available"]').value)||0, b=parseFloat($('[data-ff="booked"]').value)||0;
     if(!h||isNaN(a)){ toast("Please enter valid budget details."); return; }
     i.acct={head:h,sanctioned:s,available:a,booked:b,by:S.user,t:new Date().toISOString()};
   } else if(sec==="pur"){
@@ -943,7 +943,7 @@ function calcFormTotals(){
 }
 
 function submitNewIndent(){
-  const u=me(), title=$("#f_title").value.trim(), cat=$("#f_cat").value, bhead=$("#f_bhead").value.trim(), sanc=parseFloat($("#f_sanc").value)\vert{}\vert{}0, purp=$("#f_purp").value.trim(), vname=$("#f_vname").value.trim(), qref=$("#f_qref").value.trim();
+  const u=me(), title=$("#f_title").value.trim(), cat=$("#f_cat").value, bhead=$("#f_bhead").value.trim(), sanc=parseFloat($("#f_sanc").value)||0, purp=$("#f_purp").value.trim(), vname=$("#f_vname").value.trim(), qref=$("#f_qref").value.trim();
   if(!title||!purp||!vname){ toast("Please fill in all mandatory fields."); return; }
   const validItems=FORM_ITEMS.filter(i=>i.d.trim()&&i.q>0&&i.r>0);
   if(!validItems.length){ toast("Please add at least one item with description, qty, and rate."); return; }
