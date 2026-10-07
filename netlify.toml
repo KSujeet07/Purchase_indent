@@ -1,0 +1,8 @@
+[build]
+  publish = "public"
+
+# Serve index.html for all routes (replaces the Express catch-all in server.js)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
