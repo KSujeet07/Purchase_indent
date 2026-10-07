@@ -1,0 +1,1061 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Purchase Indent System - IIT Ropar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1E40AF; --navy2:#1E3A8A; --gold:#2563EB; --goldl:#EFF6FF;
+  --bg:#F8FAFC; --card:#fff; --ink:#1E293B; --mut:#64748B; --line:#E2E8F0; --line2:#F1F5F9;
+  --blue:#1D4ED8; --bluel:#E5EDFD; --green:#16A34A; --greenl:#DCFCE7;
+  --amber:#B45309; --amberl:#FEF3C7; --red:#B91C1C; --redl:#FEE2E2; --orange:#C2410C; --orangel:#FFEDD5;
+  --gray:#475569; --grayl:#F1F5F9;
+  --sans:Inter,system-ui,-apple-system,"Segoe UI",sans-serif; --serif:var(--sans);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:14.5px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--sans);margin:0;font-weight:700;color:#0F172A}
+h1{font-size:22px;line-height:1.25} h2{font-size:18px} h3{font-size:15px}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid #7aa7ff;outline-offset:2px;border-radius:6px}
+a{color:var(--blue)}
+.muted{color:var(--mut)} .small{font-size:13px} .xs{font-size:12px}
+.row{display:flex;align-items:center;gap:10px} .between{justify-content:space-between} .wrap{flex-wrap:wrap}
+.grow{flex:1} .mt8{margin-top:8px}.mt16{margin-top:16px}.mt24{margin-top:24px}.mb8{margin-bottom:8px}.mb16{margin-bottom:16px}
+
+/* sidebar layout */
+.side{position:fixed;top:0;left:0;bottom:0;width:248px;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 12px;z-index:20;overflow:auto}
+.content{margin-left:248px;min-width:0}
+.brand{display:flex;align-items:center;gap:11px;cursor:pointer;text-decoration:none;color:var(--ink);padding:2px 8px 18px}
+.mark{width:36px;height:36px;border-radius:10px;background:var(--navy);display:grid;place-items:center;font-weight:700;color:#fff;font-size:14px;flex:none}
+.brand b{font-size:15px;display:block;line-height:1.2;color:#0F172A}
+.brand span{font-size:12px;color:var(--mut);display:block;line-height:1.3}
+.navlbl{font-size:11.5px;font-weight:600;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em;padding:6px 10px}
+.nav{display:flex;flex-direction:column;gap:3px}
+.nav button{white-space:nowrap;background:none;border:0;color:#475569;padding:10px 12px;border-radius:9px;cursor:pointer;font-weight:500;display:flex;gap:11px;align-items:center;width:100%;text-align:left}
+.nav button:hover{background:var(--line2);color:#0F172A}
+.nav button.on{background:var(--navy);color:#fff}
+.nav .badge{margin-left:auto;background:#F59E0B;color:#fff;font-size:11.5px;font-weight:700;border-radius:999px;padding:0 7px;line-height:19px}
+.side .foot{margin-top:auto;padding-top:16px;display:grid;gap:10px}
+.side .foot label{font-size:11.5px;font-weight:600;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em}
+.side .foot select{width:100%;border:1px solid #CBD5E1;border-radius:9px;padding:8px;background:#fff;font-size:13px}
+.usercard{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.usercard .av{width:34px;height:34px;font-size:12.5px}
+.usercard b{display:block;font-size:13.5px;line-height:1.25}.usercard span{font-size:12px;color:var(--mut);line-height:1.25;display:block}
+.usercard button{margin-left:auto;background:none;border:0;color:var(--mut);cursor:pointer;padding:6px;border-radius:8px;display:grid;place-items:center}
+.usercard button:hover{background:var(--line);color:var(--ink)}
+.protonote{font-size:12px;color:#92400E;background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:7px 9px;line-height:1.35}
+main{max-width:1180px;margin:0 auto;padding:28px 28px 100px}
+
+/* cards, buttons, chips */
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px}
+.card.pad{padding:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:8px;padding:9px 16px;border:1px solid var(--navy);background:var(--navy);color:#fff;font-weight:600;cursor:pointer;transition:background .15s}
+.btn:hover:not([disabled]){background:var(--navy2)}
+.btn.sec{background:#fff;color:var(--navy);border-color:#B9C4D4;padding:9px 16px}
+.btn.sec.sm{padding:6px 11px}.btn.sec:hover:not([disabled]){background:#F4F7FB}
+.btn.danger{background:#fff;color:var(--red);border-color:#E6B3B3}.btn.danger:hover:not([disabled]){background:var(--redl)}
+.btn.gold{background:var(--navy);border-color:var(--navy);color:#fff}.btn.gold:hover:not([disabled]){background:var(--navy2)}
+.btn.sm{padding:6px 11px;font-size:13px}
+.btn.big{padding:12px 16px;font-size:15.5px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:2px 10px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.c-gray{background:var(--grayl);color:var(--gray)} .c-blue{background:var(--bluel);color:#1741B0} .c-green{background:var(--greenl);color:#116632}
+.c-amber{background:var(--amberl);color:var(--amber)} .c-red{background:var(--redl);color:var(--red)} .c-orange{background:var(--orangel);color:var(--orange)}
+.c-solidgreen{background:var(--green);color:#fff}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:currentColor}
+
+/* login */
+.loginwrap{min-height:100vh;display:grid;place-items:center;padding:24px}
+.login{width:100%;max-width:420px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:32px 32px 26px}
+.login .top1{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.login .top1 b{display:block;font-size:16px;color:#0F172A;line-height:1.2}.login .top1 span{font-size:12.5px;color:var(--mut)}
+.field{display:grid;gap:5px;margin-bottom:14px}
+.field label,.lbl{font-weight:600;font-size:13.5px;color:#2b3648}
+.req:after{content:" *";color:var(--red)}
+.inp,.sel,.txt{width:100%;border:1px solid #BFC9D8;border-radius:8px;padding:9px 11px;background:#fff}
+.inp:focus,.sel:focus,.txt:focus{border-color:var(--navy2);outline:3px solid #cfe0ff;outline-offset:0}
+.inp[readonly]{background:#F3F5F8;color:#44506a}
+.inp:disabled,.txt:disabled,.sel:disabled{background:#EEF0F4;color:#56627a;cursor:not-allowed;border-color:#D5DBE5}
+.txt{min-height:78px;resize:vertical}
+.err{display:none;color:var(--red);font-size:12.5px;font-weight:500}
+.field.bad .inp,.field.bad .sel,.field.bad .txt{border-color:var(--red);background:#FFF8F8}
+.field.bad .err{display:block}
+.field.bad .opt span{border-color:var(--red)}
+.alert{border-radius:8px;padding:10px 12px;font-size:14px;display:flex;gap:10px;align-items:flex-start}
+.alert.warn{background:var(--amberl);color:#6b3d05;border:1px solid #EBCB8B}
+.alert.bad{background:var(--redl);color:#7e1717;border:1px solid #EBB5B5}
+.alert.info{background:var(--bluel);color:#173a8f;border:1px solid #BFD1F8}
+.demo{margin-top:22px;border-top:1px solid var(--line);padding-top:16px}
+.demo .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.demo button{border:1px solid #C4CEDC;background:#fff;border-radius:999px;padding:4px 11px;font-size:12.5px;cursor:pointer}
+.demo button:hover{background:#F0F4FA}
+
+/* dashboard */
+.hello{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.stat{padding:16px 18px;background:#fff;border:1px solid var(--line);border-radius:12px}
+.stat .n{font-size:28px;font-weight:700;color:var(--navy);line-height:1.1}
+.stat .t{color:var(--mut);font-size:13.5px}
+.stat.act{border-color:#93C5FD;background:#F5F9FF}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);padding:0 14px;overflow:auto}
+.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:13px 12px 11px;cursor:pointer;color:var(--mut);font-weight:600;white-space:nowrap}
+.tabs button.on{color:var(--navy);border-color:var(--navy)}
+.tabs .ct{font-weight:500;color:var(--mut);margin-left:5px;font-size:12.5px}
+.toolbar{display:flex;gap:10px;padding:14px;align-items:center}
+.search{position:relative;flex:1;max-width:360px}
+.search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--mut)}
+.search input{padding-left:34px}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);padding:11px 14px;border-bottom:1px solid var(--line);background:#F8FAFC}
+td{padding:13px 14px;border-bottom:1px solid var(--line2);vertical-align:middle}
+tbody tr{cursor:pointer} tbody tr:hover{background:#F8FAFD}
+tbody tr.mine td:first-child{box-shadow:inset 4px 0 0 var(--gold)}
+.tnum{font-variant-numeric:tabular-nums}
+.empty{padding:46px 20px;text-align:center;color:var(--mut)}
+.empty b{display:block;color:var(--ink);font-family:var(--serif);font-size:17px;margin-bottom:4px}
+.tablewrap{overflow-x:auto}
+.mini{display:flex;gap:3px;margin-top:6px}
+.mini span{height:5px;flex:1;border-radius:3px;background:var(--line)}
+.mini span.d{background:var(--green)}.mini span.c{background:var(--gold)}
+
+/* detail */
+.crumb{font-size:13.5px;color:var(--mut);margin-bottom:12px}
+.crumb a{cursor:pointer;text-decoration:none}.crumb a:hover{text-decoration:underline}
+.head{padding:20px 22px}
+.head .meta{display:flex;gap:22px;flex-wrap:wrap;margin-top:14px;font-size:14px}
+.head .meta div span{display:block;color:var(--mut);font-size:12.5px}
+.head .meta div b{font-weight:600}
+.stepper{display:flex;margin-top:22px}
+.step{flex:1;position:relative;text-align:center;font-size:13px;color:var(--mut)}
+.step:before{content:"";position:absolute;top:13px;left:-50%;width:100%;height:3px;background:var(--line)}
+.step:first-child:before{display:none}
+.step .c{position:relative;z-index:1;width:28px;height:28px;border-radius:50%;margin:0 auto 6px;background:#fff;border:2px solid #C3CCDA;display:grid;place-items:center;font-size:12px;font-weight:700}
+.step.done .c{background:var(--green);border-color:var(--green);color:#fff}
+.step.done:before,.step.cur:before{background:var(--green)}
+.step.cur .c{border-color:var(--gold);background:var(--goldl);color:#1E40AF;box-shadow:0 0 0 4px rgba(37,99,235,.18)}
+.step.cur{color:var(--ink);font-weight:600}
+.step.warn .c{border-color:var(--orange);background:var(--orangel);color:var(--orange);box-shadow:none}
+.step.bad .c{border-color:var(--red);background:var(--redl);color:var(--red);box-shadow:none}
+.step small{display:block;font-weight:500;color:var(--mut);font-size:12px;line-height:1.25}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:20px;margin-top:20px;align-items:start}
+.panel{position:sticky;top:20px}
+.sec{padding:0}
+.sec .sh{padding:12px 18px;border-bottom:1px solid var(--line);font-family:var(--serif);font-weight:700;color:var(--navy);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sec .sb{padding:16px 18px}
+.sec.acc .sh{background:var(--bluel);border-left:5px solid var(--blue)} .sec.pur .sh{background:var(--greenl);border-left:5px solid var(--green)}
+.sec.fin .sh{background:var(--goldl);border-left:5px solid var(--gold)} .sec.ind .sh{background:#F3F5F8;border-left:5px solid var(--gray)}
+.sec.lockd{background:#FAFBFC}
+.sec.lockd .sh{background:#F1F3F6;border-left-color:#AEB8C7}
+.sec.editing{border-color:var(--gold);box-shadow:0 0 0 2px rgba(37,99,235,.3)}
+.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 22px}
+.kv div span{display:block;color:var(--mut);font-size:12.5px}
+.kv div b{font-weight:600;word-break:break-word}
+.kv .full{grid-column:1/-1}
+.items{font-size:14px;margin-top:6px}
+.items th,.items td{padding:8px 10px}.items tbody tr{cursor:default}.items tbody tr:hover{background:none}
+.items .r{text-align:right}
+.items tfoot td{border-top:2px solid var(--line);font-weight:600}
+.signs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.sign{border:1px dashed #B8C3D4;border-radius:8px;padding:9px 10px;min-height:68px;font-size:13px}
+.sign span{display:block;color:var(--mut);font-size:12px}
+.sign.ok{border-style:solid;border-color:#9fd1b0;background:#F4FBF6}
+.sign.ok b{display:block;color:#116632}
+.sign i{font-style:normal;color:var(--mut);font-size:12px;display:block}
+.cardtabs{display:flex;gap:2px;margin-bottom:12px;flex-wrap:wrap}
+.cardtabs button{border:1px solid var(--line);background:#fff;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:600;color:var(--mut)}
+.cardtabs button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.tl{list-style:none;margin:0;padding:6px 18px 6px 46px;position:relative}
+.tl:before{content:"";position:absolute;left:21px;top:16px;bottom:16px;width:2px;background:var(--line)}
+.tl li{position:relative;padding:12px 0}
+.tl li:before{content:"";position:absolute;left:-32px;top:15px;width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid var(--navy2)}
+.tl li.g:before{border-color:var(--green)}.tl li.o:before{border-color:var(--orange)}.tl li.r:before{border-color:var(--red)}
+.tl .rem{margin-top:6px;background:#F5F7FA;border-left:3px solid #C5CFDE;padding:6px 10px;border-radius:0 6px 6px 0;font-size:14px}
+.docs{list-style:none;margin:0;padding:6px 0}
+.docs li{display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:1px solid var(--line2)}
+.docs li:last-child{border:0}
+.docs .ico{width:36px;height:36px;border-radius:8px;background:var(--bluel);color:var(--blue);display:grid;place-items:center;flex:none}
+
+/* action panel */
+.ap{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 6px 20px rgba(37,99,235,.1)}
+.ap .ah{padding:14px 18px;background:var(--goldl);border-bottom:1px solid #BFDBFE;border-radius:10px 10px 0 0}
+.ap .ah h3{color:#1E3A8A}
+.ap .ab{padding:16px 18px;display:grid;gap:12px}
+.ap .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ap .sstat{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:14px;border:1px solid var(--line);border-radius:8px;padding:8px 11px;background:#FAFBFD}
+.ap .sstat.ok{background:#F4FBF6;border-color:#B5DEC2}
+.ap .grp{font-size:12.5px;color:var(--mut);font-weight:600;margin-top:2px}
+.person{display:flex;align-items:center;gap:11px;width:100%;text-align:left;border:1.5px solid #CBD4E1;border-radius:99px;background:#fff;padding:9px 11px;cursor:pointer;margin-bottom:7px}
+.person:hover:not([disabled]){border-color:#8fa5c6}
+.person.on{border-color:var(--navy);background:#F3F7FD;box-shadow:0 0 0 2px rgba(15,42,74,.12)}
+.person[disabled]{opacity:.55;cursor:not-allowed;background:#F6F7F9}
+.av{flex:none;width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:600;font-size:13px}
+.av.b{background:var(--blue)}.av.g{background:var(--green)}.av.y{background:var(--amber)}
+.person .nm{font-weight:600;line-height:1.25}.person .ds{font-size:12.5px;color:var(--mut)}
+.person .st{margin-left:auto;font-size:12.5px;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.person .st.on{color:var(--green)}.person .st.off{color:var(--mut)}
+.wait{padding:18px}
+.wait .av{width:44px;height:44px}
+.gl{font-size:12.5px;color:var(--mut);font-weight:600;margin:10px 0 6px}
+
+/* forms */
+.formhead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.seg{display:inline-flex;border:1px solid #B9C4D4;border-radius:9px;overflow:hidden;background:#fff}
+.seg button{border:0;background:#fff;padding:9px 16px;cursor:pointer;font-weight:600;color:var(--mut)}
+.seg button.on{background:var(--navy);color:#fff}
+.fsec{margin-bottom:16px}
+.fsec .sh{background:#fff}
+.num{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;font-size:12.5px;margin-right:9px;font-family:var(--sans);font-weight:700}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:0 18px}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.opt span{display:inline-block;border:1.5px solid #BFC9D8;border-radius:999px;padding:6px 14px;font-size:14px;background:#fff}
+.opt input:checked+span{background:var(--navy);border-color:var(--navy);color:#fff}
+.opt input:focus-visible+span{outline:3px solid #7aa7ff;outline-offset:2px}
+.itemtbl input{padding:7px 9px}
+.itemtbl td{padding:6px 6px;border:0}.itemtbl th{padding:8px 6px}.itemtbl tbody tr{cursor:default}.itemtbl tbody tr:hover{background:none}
+.totals{margin-left:auto;width:290px;margin-top:10px;font-size:14px}
+.totals div{display:flex;justify-content:space-between;padding:4px 0}
+.totals .gt{border-top:2px solid var(--navy);margin-top:4px;padding-top:8px;font-weight:700;font-size:16px}
+.drop{border:2px dashed #B4C0D2;border-radius:10px;padding:22px;text-align:center;color:var(--mut);cursor:pointer;background:#FAFBFD}
+.drop:hover{border-color:var(--navy2);background:#F3F7FD}
+.chk{display:flex;gap:9px;align-items:flex-start;padding:5px 0;font-size:14px;cursor:pointer}
+.chk input{margin-top:3px;width:16px;height:16px;accent-color:var(--navy)}
+.bal{display:flex;justify-content:space-between;align-items:center;margin-top:2px;font-weight:600;font-size:14px;padding:8px 12px;background:#F3F5F8;border-radius:8px}
+.stickybar{position:fixed;left:248px;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:12px 20px;z-index:15;}
+.stickybar .in{max-width:1124px;margin:0 auto;display:flex;align-items:center;gap:10px;justify-content:space-between}
+.newtab{background:#fff;border:1px solid #BFD1F8;border-left:5px solid var(--blue);border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start}
+.newtab svg{color:var(--blue);flex:none;margin-top:2px}
+.lockchip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--gray);background:var(--grayl);border-radius:999px;padding:2px 10px}
+
+/* split views */
+.split{display:grid;grid-template-columns:360px minmax(0,1fr);gap:16px;align-items:start}
+.list{max-height:calc(100vh - 290px);min-height:240px;overflow:auto}
+.lrow{display:flex;gap:11px;align-items:center;padding:11px 14px;border:0;border-bottom:1px solid var(--line2);cursor:pointer;width:100%;background:#fff;text-align:left}
+.lrow:hover{background:#F8FAFD}.lrow.on{background:#F1F5FC;box-shadow:inset 4px 0 0 var(--navy)}
+.lrow .t1{font-weight:600;line-height:1.3}.lrow .t2{font-size:12.5px;color:var(--mut)}
+.pbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.dtl{padding:20px 22px}
+.sechead{font-family:var(--serif);font-weight:700;color:var(--navy);margin:20px 0 8px;font-size:16px}
+
+/* modal + toast */
+.ov{position:fixed;inset:0;background:rgba(10,24,45,.5);z-index:40;display:flex;padding:18px;overflow:auto}
+.ov>*{margin:auto}
+.modal{background:#fff;border-radius:12px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:pop .16s ease-out}
+@keyframes pop{from{transform:translateY(8px);opacity:.4}to{transform:none;opacity:1}}
+.modal .mh{padding:18px 22px 6px}.modal .mb{padding:8px 22px 6px;max-height:68vh;overflow:auto}.modal .mf{padding:16px 22px 20px;display:flex;gap:10px;justify-content:flex-end}
+.sum{background:#F5F7FA;border-radius:8px;padding:10px 12px;font-size:14px;margin:8px 0 14px;display:grid;gap:3px}
+.ropt{display:flex;gap:10px;align-items:flex-start;padding:9px 11px;border:1.5px solid #CBD4E1;border-radius:9px;margin-bottom:7px;cursor:pointer}
+.ropt.on{border-color:var(--navy);background:#F3F7FD}
+.ropt input{margin-top:4px;accent-color:var(--navy)}
+.ropt b{display:block}.ropt span{font-size:13px;color:var(--mut)}
+.pwd{position:relative}.pwd svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--mut)}.pwd input{padding-left:34px}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--navy);color:#fff;border-radius:10px;padding:12px 18px;z-index:60;box-shadow:0 10px 30px rgba(0,0,0,.3);display:flex;gap:10px;align-items:center;max-width:90vw;animation:pop .2s ease-out}
+.toast svg{color:#7ee0a3}
+.record{background:#fff;max-width:820px;margin:0 auto;border-radius:6px;padding:34px 40px;font-family:Georgia,"Times New Roman",serif;color:#111}
+.record h2{text-align:center;font-size:20px;color:#111}
+.record table{font-family:var(--sans);font-size:13.5px}
+.record td,.record th{border:1px solid #444;padding:6px 8px;background:#fff;color:#111}
+.record th{font-weight:700}
+.record .sg{font-family:var(--sans);font-size:12.5px;border:1px solid #444;padding:8px;min-height:62px}
+.record .sg b{display:block;color:#116632}
+
+@media (max-width:980px){
+  .side{position:sticky;width:100%;flex-direction:row;align-items:center;gap:8px;padding:8px 12px;border-right:0;border-bottom:1px solid var(--line);overflow-x:auto}
+  .content{margin-left:0}
+  .brand{padding:0 6px 0 0}.brand span,.navlbl,.side .foot label,.usercard div,.protonote{display:none}
+  .nav{flex-direction:row}.nav button{padding:8px 11px;width:auto}
+  .side .foot{margin:0 0 0 auto;padding:0;display:flex;align-items:center}.side .foot select{width:150px}
+  .usercard{padding:2px;border:0;background:none}
+  .stickybar{left:0}
+  .cols,.split{grid-template-columns:1fr}.panel{position:static;order:-1}
+  .stats{grid-template-columns:1fr 1fr 1fr}
+  .g2,.g3{grid-template-columns:1fr}
+  main{padding:18px 14px 100px}
+  .stepper{overflow-x:auto;padding-bottom:6px}.step{min-width:92px}
+  .signs{grid-template-columns:1fr}
+  .list{max-height:320px}
+}
+@media print{
+  body *{visibility:hidden}
+  .ov,.ov *{visibility:visible}
+  .ov{position:absolute;inset:0;background:#fff;padding:0;display:block}
+  .record{box-shadow:none;max-width:none;padding:0}
+  .noprint{display:none!important}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal"></div>
+<div id="toast"></div>
+
+<script>
+/* ============ helpers ============ */
+const $=(s,el=document)=>el.querySelector(s), $$=(s,el=document)=>[...el.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const inr=n=>"₹"+Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:2});
+const fmt=d=>new Date(d).toLocaleString("en-GB",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:false});
+const BASE=new Date(2026,9,7,13,30);
+const ago=(d,h=0,m=0)=>new Date(BASE-((d*24+h)*60+m)*60000).toISOString();
+const ICONS={
+check:'<path d="M20 6 9 17l-5-5"/>',plus:'<path d="M12 5v14M5 12h14"/>',
+search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',file:'<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5z"/><path d="M14 2v6h6"/>',
+clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>',print:'<path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>',
+undo:'<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',home:'<path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/>',
+users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>',
+shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+route:'<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
+edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/>',send:'<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
+list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',reset:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/>',
+reroute:'<path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>'};
+const ic=(n,s=18)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]||""}</svg>`;
+const initials=n=>n.replace(/^(Dr\.|Prof\.)\s*/,"").split(" ").map(x=>x[0]).slice(0,2).join("");
+
+/* ============ roles and people ============ */
+const ROLES={
+ ind:{label:"Indenter",tiers:["ind"]},hod:{label:"HOD",tiers:["hod","final"]},
+ a_top:{label:"Accounts: AR/DR/JR",tiers:["a_top"]},a_mid:{label:"Accounts: JAO/AO",tiers:["a_mid"]},a_low:{label:"Accounts: JAA/SAA",tiers:["a_low"]},
+ p_top:{label:"Purchase: AR/DR/JR",tiers:["p_top"]},p_mid:{label:"Purchase: JS/Supdt.",tiers:["p_mid"]},p_low:{label:"Purchase: OA/JA/SA",tiers:["p_low"]},
+ reg:{label:"Registrar (approving authority)",tiers:["final"]},admin:{label:"Admin",tiers:["admin"]},none:{label:"Not assigned",tiers:[]}};
+const roleOf=p=>p.tiers.includes("admin")?"admin":p.tiers.includes("hod")?"hod":p.tiers.includes("final")?"reg":p.tiers[0]||"none";
+const roleLabel=p=>ROLES[roleOf(p)].label;
+const PEOPLE={};
+const P=(id,cid,name,desig,role,extra={})=>({id,cid,name,desig,tiers:[...ROLES[role].tiers],dept:"CSE",avail:true,status:"authorised",...extra});
+[
+ P("p_ind","ananya.s","Dr. Ananya Sharma","Assistant Professor, CSE","ind"),
+ P("p_ind2","meera.i","Dr. Meera Iyer","Associate Professor, CSE","ind"),
+ P("p_hod","rakesh.v","Prof. Rakesh Verma","HOD, CSE","hod"),
+ P("p_hod2","gurpreet.d","Prof. Gurpreet Dhillon","HOD, ECE","hod",{dept:"ECE"}),
+ P("p_ar1","sunita.k","Sunita Kapoor","AR (Accounts)","a_top",{dept:"Accounts"}),
+ P("p_ar2","mohan.l","Mohan Lal","DR (Accounts)","a_top",{dept:"Accounts"}),
+ P("p_ar3","neha.g","Neha Gill","JR (Accounts)","a_top",{dept:"Accounts",avail:false}),
+ P("p_ao1","harpreet.s","Harpreet Singh","AO (Accounts)","a_mid",{dept:"Accounts"}),
+ P("p_ao2","deepak.a","Deepak Arora","JAO (Accounts)","a_mid",{dept:"Accounts"}),
+ P("p_aa1","pooja.r","Pooja Rani","SAA (Accounts)","a_low",{dept:"Accounts"}),
+ P("p_aa2","gurmeet.k","Gurmeet Kaur","JAA (Accounts)","a_low",{dept:"Accounts",avail:false}),
+ P("p_par1","vikram.s","Vikram Sethi","DR (Purchase)","p_top",{dept:"Purchase"}),
+ P("p_par2","anjali.m","Anjali Mehta","AR (Purchase)","p_top",{dept:"Purchase"}),
+ P("p_pjs1","ravinder.k","Ravinder Kumar","Supdt. (Purchase)","p_mid",{dept:"Purchase"}),
+ P("p_pjs2","balwinder.s","Balwinder Singh","JS (Purchase)","p_mid",{dept:"Purchase",avail:false}),
+ P("p_poa1","simran.k","Simran Kaur","JA (Purchase)","p_low",{dept:"Purchase"}),
+ P("p_poa2","amit.g","Amit Garg","SA (Purchase)","p_low",{dept:"Purchase"}),
+ P("p_reg","suresh.n","Dr. Suresh Nair","Registrar","reg",{dept:"Registrar office"}),
+ P("p_admin","admin","System Admin","Administrator","admin",{dept:"IT"}),
+ P("p_new","tarun.b","Tarun Bhatia","Not assigned yet","none",{status:"pending",dept:"ECE"})
+].forEach(p=>PEOPLE[p.id]=p);
+
+const TIER_LABEL={a_top:"AR/DR/JR (Accounts)",a_mid:"JAO/AO (Accounts)",a_low:"JAA/SAA (Accounts)",p_top:"AR/DR/JR (Purchase)",p_mid:"JS/Supdt. (Purchase)",p_low:"OA/JA/SA (Purchase)",final:"Final approver: HOD of the indenter’s department, or Registrar",hod:"HOD"};
+function peopleFor(tiers,ind){
+  const dept=ind?PEOPLE[ind.by].dept:null;
+  return Object.values(PEOPLE).filter(p=>p.status==="authorised"&&p.tiers.some(t=>tiers.includes(t))&&
+    (!(p.tiers.includes("hod")&&(tiers.includes("final")||tiers.includes("hod")))||!dept||p.dept===dept));
+}
+const hodFor=u=>Object.values(PEOPLE).find(p=>p.tiers.includes("hod")&&p.dept===u.dept&&p.status==="authorised")||PEOPLE.p_hod;
+const avc=p=>p.tiers.some(t=>t==="a_top"||t==="a_mid"||t==="a_low")?"b":p.tiers.some(t=>t[0]==="p")?"g":p.tiers.includes("final")?"y":"";
+
+/* ============ stages ============ */
+const SECNAME={acct:"Accounts",pur:"Purchase",po:"Purchase order"};
+const SECKEY={acct:"acct",pur:"pur",po:"poData"};
+const STG={acct:{a_top:"A_TOP",a_mid:"A_MID",a_low:"A_LOW"},pur:{p_top:"P_TOP",p_mid:"P_MID",p_low:"P_LOW"},po:{p_top:"PO_TOP",p_mid:"PO_MID",p_low:"PO_LOW"}};
+const ST={
+ DRAFT:{lbl:"Draft",chip:"c-gray",step:0},
+ RETURNED:{lbl:"Returned for correction",chip:"c-orange",step:0},
+ REJECTED:{lbl:"Rejected",chip:"c-red",step:-1},
+ HOD:{lbl:"With HOD",chip:"c-gray",step:1,tier:"hod",appr:{to:["a_top"],next:"A_TOP",title:"Approve and send to Accounts"}},
+ A_TOP:{lbl:"Accounts: AR/DR/JR",chip:"c-blue",step:2,tier:"a_top",sec:"acct",fwd:["a_mid","a_low"],appr:{to:["p_top"],next:"P_TOP",title:"Approve and send to Purchase"}},
+ A_MID:{lbl:"Accounts: JAO/AO",chip:"c-blue",step:2,tier:"a_mid",sec:"acct",fwd:["a_low"],appr:{to:["a_top"],next:"A_TOP",title:"Approve and send back up"}},
+ A_LOW:{lbl:"Accounts: JAA/SAA",chip:"c-blue",step:2,tier:"a_low",sec:"acct",appr:{to:["a_mid"],next:"A_MID",title:"Approve and send back up"}},
+ P_TOP:{lbl:"Purchase: AR/DR/JR",chip:"c-green",step:3,tier:"p_top",sec:"pur",fwd:["p_mid","p_low"],appr:{to:["final"],next:"FINAL",title:"Approve and send for final approval"}},
+ P_MID:{lbl:"Purchase: JS/Supdt.",chip:"c-green",step:3,tier:"p_mid",sec:"pur",fwd:["p_low"],appr:{to:["p_top"],next:"P_TOP",title:"Approve and send back up"}},
+ P_LOW:{lbl:"Purchase: OA/JA/SA",chip:"c-green",step:3,tier:"p_low",sec:"pur",appr:{to:["p_mid"],next:"P_MID",title:"Approve and send back up"}},
+ FINAL:{lbl:"Final approval",chip:"c-amber",step:4,tier:"final",appr:{to:["p_top"],next:"PO_TOP",title:"Approve and send back to Purchase"}},
+ PO_TOP:{lbl:"Purchase order: AR/DR/JR",chip:"c-amber",step:5,tier:"p_top",sec:"po",fwd:["p_mid","p_low"],appr:{gen:1,title:"Generate purchase order"},noReject:1},
+ PO_MID:{lbl:"Purchase order: JS/Supdt.",chip:"c-amber",step:5,tier:"p_mid",sec:"po",fwd:["p_low"],appr:{to:["p_top"],next:"PO_TOP",label:"Send back",title:"Send back up"},noReject:1},
+ PO_LOW:{lbl:"Purchase order: OA/JA/SA",chip:"c-amber",step:5,tier:"p_low",sec:"po",appr:{to:["p_mid"],next:"PO_MID",label:"Send back",title:"Send back up"},noReject:1},
+ DONE:{lbl:"Approved",chip:"c-solidgreen",step:6}
+};
+const STEPS=["Submitted","HOD review","Accounts","Purchase","Final approval","Purchase order"];
+const secData=(i,sec)=>i[SECKEY[sec]];
+const isOpen=i=>!["DONE","REJECTED"].includes(i.stage);
+
+function btnState(i){
+  const st=ST[i.stage],sec=st.sec,filled=sec?!!secData(i,sec):true,secL=sec?SECNAME[sec]:"";
+  const label=st.appr&&st.appr.gen?"Generate PO":(st.appr&&st.appr.label)||"Approve";
+  return {
+    approve:{label,on:filled,why:filled?"":`Fill the ${secL} part first.`},
+    forward:{on:!!st.fwd&&!filled,why:!st.fwd?((i.stage==="HOD"||i.stage==="FINAL")?"Use Approve to choose who gets it next.":"No one below you in this section."):filled?"The part is already filled. Approve it instead.":""},
+    fill:{label:filled?"Edit form":"Fill form",on:!!sec,why:sec?"":"There is nothing for you to fill at this step."},
+    revise:{on:true,why:""},
+    reject:{on:!st.noReject,why:st.noReject?"This indent is already approved.":""}
+  };
+}
+
+/* ============ data persistence ============ */
+let seq=143;
+function mkIndent(o){
+  const items=o.items,sub=items.reduce((s,i)=>s+i.q*i.r,0),tax=o.tax??18;
+  return {id:"i"+(++seq),no:o.no,title:o.title,by:o.by,form:o.form,gem:!!o.gem,cat:o.cat||"Non-consumables",purpose:o.purpose,
+    budgetHead:o.budgetHead||"Departmental grant, CSE",sanctioned:o.sanctioned||600000,approvalEnclosed:"Yes",space:"NA",install:"Not required",research:o.research||"No",
+    consignee:{name:PEOPLE[o.by]?PEOPLE[o.by].name:"Indenter",addr:"Room 214, CSE Department, Main Academic Block"},
+    modes:o.modes||["E-mail"],nQuotes:o.nq||2,vendor:o.vendor,qno:o.qno,qdate:"2026-09-28",
+    items,tax,sub,total:Math.round(sub*(1+tax/100)),pay:"100% against delivery",delivery:"3 weeks from PO",
+    stage:o.stage,holder:o.holder,trail:o.trail||[],history:o.history||[],docs:[{n:"Quotation.pdf",s:"212 KB",by:o.by},{n:"Specification-sheet.pdf",s:"88 KB",by:o.by}],
+    acct:null,pur:null,poData:null,signs:{},po:null,rejIdx:undefined};
+}
+const H=(pid,type,text,remark,d,h=0,m=0)=>({pid,type,text,remark:remark||"",t:ago(d,h,m)});
+const acctF=(by,t,amt)=>({head:"Departmental grant, CSE",sanctioned:600000,available:412000,booked:amt,by,t});
+const purF=(by,t,amt)=>({quote:true,calc:true,order:true,cfa:amt,pages:"1 to 4",by,t});
+
+let IND = [];
+function saveStorage(){
+  try{ localStorage.setItem('pi_indents_v1', JSON.stringify(IND)); }catch(e){}
+}
+function loadStorage(){
+  try{
+    const d=localStorage.getItem('pi_indents_v1');
+    if(d){ IND=JSON.parse(d); return; }
+  }catch(e){}
+  seedData();
+}
+
+function seedData(){
+  const tr=(...a)=>a.map(([pid,stage])=>({pid,stage}));
+  const i1=mkIndent({no:"IND-2026-0141",title:"Network switches and cabling",by:"p_ind",form:"SPS-101",purpose:"Upgrade of the CSE research lab network. Replaces two failed switches and old cabling.",
+    items:[{d:"24-port managed switch",q:2,r:31000},{d:"CAT6 cable box (305 m)",q:5,r:2800}],vendor:"Rajdhani Networks Pvt. Ltd.",qno:"RN/2209/114",stage:"HOD",holder:"p_hod",
+    history:[H("p_ind","y","Created the indent and submitted it to HOD","",1,3)]});
+  const i2=mkIndent({no:"IND-2026-0142",title:"Oscilloscope probes (100 MHz)",by:"p_ind2",form:"SPS-101(R)",research:"Yes",purpose:"Probes for the signal-processing research bench.",
+    items:[{d:"100 MHz passive probe, 10x",q:10,r:14500}],vendor:"Tek Instruments India",qno:"TKI/8841",stage:"A_TOP",holder:"p_ar1",trail:tr(["p_hod","HOD"]),
+    history:[H("p_ind2","y","Created the indent and submitted it to HOD","",2,1),H("p_hod","g","Approved and sent to Sunita Kapoor, AR (Accounts)","Within the research budget.",1,5)]});
+  i2.signs={hod:{pid:"p_hod",t:ago(1,5)}};
+  const i3=mkIndent({no:"IND-2026-0139",title:"Projector and screen for seminar room",by:"p_ind",form:"SPS-101",gem:true,purpose:"Seminar room has no working projector.",
+    items:[{d:"WUXGA projector, 4500 lumens",q:1,r:36000},{d:"Motorised screen, 8 ft",q:1,r:4500}],vendor:"GeM seller: Vision AV Solutions",qno:"GEM/2026/B/553",modes:["GeM"],nq:1,
+    stage:"A_LOW",holder:"p_aa1",trail:tr(["p_hod","HOD"],["p_ar1","A_TOP"]),
+    history:[H("p_ind","y","Created the indent and submitted it to HOD","",4,2),H("p_hod","g","Approved and sent to Sunita Kapoor, AR (Accounts)","",3,6),
+      H("p_ar1","y","Forwarded to Pooja Rani, SAA (Accounts), skipping JAO/AO","Please fill the budget details.",2,4)]});
+  i3.signs={hod:{pid:"p_hod",t:ago(3,6)}};
+  const i4=mkIndent({no:"IND-2026-0140",title:"Lab chemicals: organic synthesis kit",by:"p_ind2",form:"SPS-101(R)",cat:"Consumables",research:"Yes",purpose:"Consumables for the first-year synthesis lab.",
+    items:[{d:"Reagent kit, organic synthesis",q:1,r:98000},{d:"Glassware consumables set",q:1,r:25000}],vendor:"ChemSource Labs",qno:"CSL/0932",stage:"P_MID",holder:"p_pjs1",
+    trail:tr(["p_hod","HOD"],["p_ar1","A_TOP"],["p_par1","P_TOP"])});
+  i4.acct=acctF("p_ar1",ago(2,3),i4.total);i4.signs={hod:{pid:"p_hod",t:ago(5,6)},acct:{a_top:{pid:"p_ar1",t:ago(2,3)}}};
+  i4.history=[H("p_ind2","y","Created the indent and submitted it to HOD","",6,1),H("p_hod","g","Approved and sent to Sunita Kapoor, AR (Accounts)","",5,6),
+    H("p_ar1","y","Filled the Accounts part","Budget available.",3,3),H("p_ar1","g","Approved and sent to Vikram Sethi, DR (Purchase)","Skipped JAO/AO and JAA/SAA.",3,2),
+    H("p_par1","y","Forwarded to Ravinder Kumar, Supdt. (Purchase), skipping OA/JA/SA","Please check the quotation calculations.",1,2)];
+  const i5=mkIndent({no:"IND-2026-0137",title:"Soldering stations (4)",by:"p_ind2",form:"SPS-101",purpose:"Electronics lab bench setup.",
+    items:[{d:"Temperature-controlled soldering station",q:4,r:7800}],vendor:"ElectroMart",qno:"EM/7710",stage:"FINAL",holder:"p_reg",
+    trail:tr(["p_hod","HOD"],["p_ar1","A_TOP"],["p_par1","P_TOP"])});
+  i5.acct=acctF("p_ar1",ago(6),i5.total);i5.pur=purF("p_par1",ago(1,4),i5.total);
+  i5.signs={hod:{pid:"p_hod",t:ago(8)},acct:{a_top:{pid:"p_ar1",t:ago(6)}},pur:{p_top:{pid:"p_par1",t:ago(1,4)}}};
+  i5.history=[H("p_ind2","y","Created the indent and submitted it to HOD","",9,1),H("p_hod","g","Approved and sent to Sunita Kapoor, AR (Accounts)","",8),
+    H("p_ar1","g","Filled the Accounts part and sent to Vikram Sethi, DR (Purchase)","",6),
+    H("p_par1","g","Filled the Purchase part and sent to Dr. Suresh Nair, Registrar, for final approval","Proposal is in order.",1,4)];
+  const i6=mkIndent({no:"IND-2026-0138",title:"Laptop for project work",by:"p_ind",form:"SPS-101",gem:true,purpose:"Project associate laptop.",
+    items:[{d:"14-inch laptop, 16 GB RAM",q:1,r:41000}],vendor:"GeM seller: Digital Hub",qno:"GEM/2026/B/401",modes:["GeM"],nq:1,stage:"DONE",holder:null,po:"PO/2026/0412"});
+  i6.acct=acctF("p_ar2",ago(14),i6.total);i6.pur=purF("p_par2",ago(11),i6.total);
+  i6.poData={date:"2026-09-28",vendor:i6.vendor,deliverTo:"Room 214, CSE Department",deliveryBy:"3 weeks from PO",payment:"100% against delivery",terms:"Warranty: 3 years on-site.",by:"p_par2",t:ago(8)};
+  i6.signs={hod:{pid:"p_hod",t:ago(18)},acct:{a_low:{pid:"p_aa1",t:ago(15)},a_mid:{pid:"p_ao1",t:ago(14,6)},a_top:{pid:"p_ar2",t:ago(14)}},pur:{p_top:{pid:"p_par2",t:ago(11)}},fin:{pid:"p_reg",t:ago(9)},po:{p_top:{pid:"p_par2",t:ago(8)}}};
+  i6.history=[H("p_ind","y","Created the indent and submitted it to HOD","",20),H("p_hod","g","Approved and sent to Mohan Lal, DR (Accounts)","",18),
+    H("p_ar2","y","Forwarded to Pooja Rani, SAA (Accounts), skipping JAO/AO","",17),H("p_aa1","g","Filled the Accounts part. Approved and sent back to Harpreet Singh, AO","",15),
+    H("p_ao1","g","Approved and sent back to Mohan Lal, DR (Accounts)","",14,6),H("p_ar2","g","Approved and sent to Anjali Mehta, AR (Purchase)","",14),
+    H("p_par2","g","Filled the Purchase part and sent to Dr. Suresh Nair, Registrar","",11),H("p_reg","g","Approved and sent back to Anjali Mehta, AR (Purchase), for the purchase order","",9),
+    H("p_par2","g","Filled the PO form. Generated purchase order PO/2026/0412","",8)];
+  const i7=mkIndent({no:"IND-2026-0136",title:"Office stationery",by:"p_ind",form:"SPS-101",cat:"Consumables",purpose:"Quarterly stationery for the department office.",tax:12,
+    items:[{d:"A4 paper, 500 sheets (carton)",q:20,r:620},{d:"Assorted stationery",q:1,r:2800}],vendor:"Gupta Stationers",qno:"GS/118",stage:"RETURNED",holder:"p_ind"});
+  i7.history=[H("p_ind","y","Created the indent and submitted it to HOD","",5,2),H("p_hod","o","Sent back for revision to Dr. Ananya Sharma, Assistant Professor, CSE","Please attach the quotation copy and confirm the budget head.",4,5)];
+  i7.docs=[{n:"Stationery-list.pdf",s:"54 KB",by:"p_ind"}];
+  const i8=mkIndent({no:"IND-2026-0135",title:"Whiteboards and markers",by:"p_ind2",form:"SPS-101",purpose:"Replacement boards for two tutorial rooms.",
+    items:[{d:"Magnetic whiteboard, 6x4 ft",q:4,r:5200},{d:"Marker set (box of 50)",q:3,r:900}],vendor:"Office Depot India",qno:"ODI/5521",stage:"PO_TOP",holder:"p_par2",
+    trail:tr(["p_hod","HOD"],["p_ar2","A_TOP"],["p_par2","P_TOP"],["p_reg","FINAL"])});
+  i8.acct=acctF("p_ar2",ago(7),i8.total);i8.pur=purF("p_par2",ago(3),i8.total);
+  i8.signs={hod:{pid:"p_hod",t:ago(10)},acct:{a_top:{pid:"p_ar2",t:ago(7)}},pur:{p_top:{pid:"p_par2",t:ago(3)}},fin:{pid:"p_reg",t:ago(0,3)}};
+  i8.history=[H("p_ind2","y","Created the indent and submitted it to HOD","",11),H("p_hod","g","Approved and sent to Mohan Lal, DR (Accounts)","",10),
+    H("p_ar2","g","Filled the Accounts part and sent to Anjali Mehta, AR (Purchase)","",7),H("p_par2","g","Filled the Purchase part and sent to Dr. Suresh Nair, Registrar","",3),
+    H("p_reg","g","Approved and sent back to Anjali Mehta, AR (Purchase), for the purchase order","",0,3)];
+  IND.push(i1,i2,i3,i4,i5,i6,i7,i8);
+  saveStorage();
+}
+loadStorage();
+
+/* ============ state ============ */
+const S={user:null,view:"login",id:null,tab:"details",filter:"pending",q:"",tq:"",aq:"",asort:"upd",aSel:null,uq:"",uSel:null,edit:null,formType:"SPS-101",docs:[],loginErr:"",lastCid:""};
+const me=()=>PEOPLE[S.user];
+const byId=id=>IND.find(i=>i.id===id);
+const needsMe=i=>i.holder===S.user&&isOpen(i);
+const isAdm=()=>me()&&me().tiers.includes("admin");
+const lastT=i=>i.history.length?i.history[i.history.length-1].t:ago(0);
+const stageChip=i=>`<span class="chip ${ST[i.stage].chip}">${esc(ST[i.stage].lbl)}</span>`;
+function visible(){
+  const u=me();
+  if(!u) return [];
+  if(isAdm())return IND;
+  if(u.tiers.includes("hod"))return IND.filter(i=>PEOPLE[i.by]&&PEOPLE[i.by].dept===u.dept||i.holder===u.id||i.history.some(h=>h.pid===u.id));
+  if(u.tiers.includes("ind"))return IND.filter(i=>i.by===u.id);
+  return IND.filter(i=>i.holder===u.id||i.history.some(h=>h.pid===u.id));
+}
+const stepCur=i=>i.stage==="REJECTED"?i.rejIdx:ST[i.stage].step;
+
+/* ============ render ============ */
+function go(view,id){
+  if(me()&&isAdm()&&view==="dash")view="aind";
+  S.view=view;if(id!==undefined)S.id=id;S.tab="details";window.scrollTo(0,0);render();
+}
+function render(){
+  const app=$("#app");
+  if(S.view==="login"){app.innerHTML=loginView();return}
+  const body={dash:dashView,detail:detailView,new:formView,users:usersView,aind:aindView,track:trackView,fill:fillView}[S.view]();
+  app.innerHTML=`<div class="shell">${headerView()}<div class="content"><main>${body}</main>`+(S.view==="new"?formBar():"")+(S.view==="fill"?fillBar():"")+`</div></div>`;
+  if(S.view==="new")initForm();
+  if(S.view==="fill")initFill();
+}
+function headerView(){
+  const u=me(),isInd=u.tiers.includes("ind"),adm=isAdm();
+  const opts=Object.values(PEOPLE).filter(p=>p.status==="authorised").map(p=>`<option value="${p.id}" ${p.id===u.id?"selected":""}>${esc(p.name)}, ${esc(p.desig)}</option>`).join("");
+  const nav=adm?[["aind","Indents","list"],["users","Users","users"]]:[["dash","Dashboard","home"]].concat(isInd?[["new","Create indent","plus"]]:[],[["track","Track indent","route"]]);
+  const on=k=>S.view===k||(k==="dash"&&(S.view==="detail"||S.view==="fill"));
+  return `<aside class="side">
+   <a class="brand" data-act="nav" data-to="dash" tabindex="0" role="link"><div class="mark">PI</div><div><b>Purchase Indent</b><span>IIT Ropar, Stores and Purchase</span></div></a>
+   <div class="navlbl">Menu</div>
+   <nav class="nav" aria-label="Main">${nav.map(n=>`<button data-act="nav" data-to="${n[0]}" class="${on(n[0])?"on":""}">${ic(n[2],17)}${n[1]}${n[0]==="dash"&&visible().filter(needsMe).length?`<span class="badge">${visible().filter(needsMe).length}</span>`:""}</button>`).join("")}</nav>
+   <div class="foot">
+    <div class="protonote">Switch roles below to test workflows across departments.</div>
+    <label for="asSel">Viewing as</label><select id="asSel" data-act="switch">${opts}</select>
+    <div class="usercard"><div class="av">${esc(u.name.split(" ").filter(w=>!/\./.test(w)).map(w=>w[0]).join("").slice(0,2).toUpperCase())}</div><div><b>${esc(u.name)}</b><span>${esc(u.desig)}</span></div>
+     <button data-act="logout" title="Sign out" aria-label="Sign out">${ic("logout",17)}</button></div></div></aside>`;
+}
+
+/* ---- login ---- */
+function loginView(){
+  const chips=[["Indenter","ananya.s"],["HOD","rakesh.v"],["Accounts AR","sunita.k"],["Accounts AO","harpreet.s"],["Accounts SAA","pooja.r"],["Purchase DR","vikram.s"],["Purchase Supdt.","ravinder.k"],["Purchase AR","anjali.m"],["Registrar","suresh.n"],["Admin","admin"],["New user (pending)","tarun.b"]];
+  return `<div class="loginwrap"><div class="login">
+    <div class="top1"><div class="mark" style="width:42px;height:42px">PI</div><div><b>Purchase Indent System</b><span>IIT Ropar, Stores and Purchase</span></div></div>
+    <h2>Sign in</h2><p class="muted small" style="margin:4px 0 18px">Use your college ID. New accounts work only after the Admin authorises them.</p>
+    ${S.loginErr?`<div class="alert bad mb16" role="alert">${ic("info",18)}<span>${esc(S.loginErr)}</span></div>`:""}
+    <form id="loginForm" novalidate onsubmit="event.preventDefault(); doLogin();">
+     <div class="field"><label for="cid">College ID</label><input class="inp" id="cid" autocomplete="username" placeholder="e.g. ananya.s" value="${esc(S.lastCid)}"></div>
+     <div class="field"><label for="pw">Password</label><input class="inp" id="pw" type="password" autocomplete="current-password" placeholder="Your password" value="password"></div>
+     <button class="btn" style="width:100%;margin-top:4px" type="submit">Sign in</button></form>
+    <div class="demo"><div class="small"><b>Quick demo mode:</b> Pick any account below, then press Sign in (any password works).</div>
+     <div class="chips">${chips.map(c=>`<button type="button" data-act="demoid" data-cid="${c[1]}">${esc(c[0])}</button>`).join("")}</div></div></div></div>`;
+}
+function doLogin(){
+  const cid=$("#cid").value.trim().toLowerCase(),pw=$("#pw").value;S.lastCid=cid;
+  if(!cid||!pw){S.loginErr="Enter your college ID and password.";return render()}
+  const p=Object.values(PEOPLE).find(x=>x.cid===cid);
+  if(!p){S.loginErr="We could not find that college ID. Check it and try again.";return render()}
+  if(p.status==="pending"){S.loginErr="Your account is waiting for Admin approval. You can sign in once it is authorised.";return render()}
+  if(p.status==="blocked"){S.loginErr="This account is blocked. Contact the Admin.";return render()}
+  S.loginErr="";S.user=p.id;S.filter="pending";go("dash");
+}
+
+/* ---- dashboard ---- */
+function tabsFor(u){
+  const t=[["pending","Pending approvals"]];
+  if(u.tiers.includes("ind"))t.push(["mine","My indents"]);
+  else if(u.tiers.includes("hod"))t.push(["dept","Department indents"]);
+  else t.push(["handled","Handled by me"]);
+  return t;
+}
+function rowsFor(k){
+  const u=me(),all=visible();
+  if(k==="pending")return all.filter(needsMe);
+  if(k==="mine")return all.filter(i=>i.by===u.id);
+  if(k==="handled")return all.filter(i=>!needsMe(i)&&i.history.some(h=>h.pid===u.id));
+  return all;
+}
+function dashView(){
+  const u=me(),all=visible(),tabs=tabsFor(u);
+  if(!tabs.some(t=>t[0]===S.filter))S.filter="pending";
+  const pend=all.filter(needsMe).length,prog=all.filter(i=>isOpen(i)).length,done=all.filter(i=>i.stage==="DONE").length;
+  let rows=rowsFor(S.filter);
+  const q=S.q.trim().toLowerCase();if(q)rows=rows.filter(i=>(i.no+i.title+(PEOPLE[i.by]?PEOPLE[i.by].name:"")).toLowerCase().includes(q));
+  rows=[...rows].sort((a,b)=>(needsMe(b)-needsMe(a))||(new Date(lastT(b))-new Date(lastT(a))));
+  const hr=new Date().getHours(),greet=hr<12?"Good morning":hr<17?"Good afternoon":"Good evening";
+  const w=u.name.split(" "),nm=/^(Dr\.|Prof\ me.)$/.test(w[0])?w[0]+" "+w[1]:w[0];
+  return `<div class="hello"><div><h1>${greet}, ${esc(nm)}</h1><div class="muted">${esc(u.desig)} · ${esc(roleLabel(u))}</div></div>
+    ${u.tiers.includes("ind")?`<button class="btn gold" data-act="nav" data-to="new">${ic("plus",16)}Create indent</button>`:""}</div>
+   <div class="stats"><div class="stat ${pend?"act":""}"><div class="n">${pend}</div><div class="t">Pending approvals</div></div>
+    <div class="stat"><div class="n">${prog}</div><div class="t">In progress</div></div><div class="stat"><div class="n">${done}</div><div class="t">Approved</div></div></div>
+   <div class="card"><div class="tabs" role="tablist">${tabs.map(t=>`<button class="${S.filter===t[0]?"on":""}" data-act="filter" data-k="${t[0]}">${t[1]}<span class="ct">${rowsFor(t[0]).length}</span></button>`).join("")}</div>
+    <div class="toolbar"><div class="search">${ic("search",16)}<input class="inp" id="q" placeholder="Search by indent number, item or indenter" value="${esc(S.q)}" aria-label="Search indents"></div></div>
+    <div class="tablewrap">${rows.length?indentTable(rows):`<div class="empty"><b>${S.filter==="pending"?"Nothing is waiting for you":"No indents here"}</b>${S.filter==="pending"?"New indents will show up here as soon as they reach you.":"Try another tab or clear the search."}</div>`}</div></div>`;
+}
+function indentTable(rows){
+  return `<table><thead><tr><th>Indent</th><th>Item</th><th>Form</th><th style="text-align:right">Amount</th><th>Stage</th><th>With</th><th>Updated</th></tr></thead><tbody>
+   ${rows.map(i=>`<tr class="${needsMe(i)?"mine":""}" data-act="open" data-id="${i.id}"><td><b>${esc(i.no)}</b>${needsMe(i)?`<div><span class="chip c-amber xs" style="margin-top:3px">Action needed</span></div>`:""}</td>
+    <td>${esc(i.title)}<div class="xs muted">${esc(PEOPLE[i.by]?PEOPLE[i.by].name:"Indenter")}</div></td><td>${esc(i.form)}${i.gem?`<div class="xs muted">GeM</div>`:""}</td>
+    <td class="tnum" style="text-align:right">${inr(i.total)}</td><td>${stageChip(i)}</td>
+    <td class="small">${i.holder&&PEOPLE[i.holder]?esc(PEOPLE[i.holder].name)+`<div class="xs muted">${esc(PEOPLE[i.holder].desig)}</div>`:`<span class="muted">Completed</span>`}</td>
+    <td class="small muted">${fmt(lastT(i))}</td></tr>`).join("")}</tbody></table>`;
+}
+
+/* ---- track indent ---- */
+function trackView(){
+  const q=S.tq.trim().toLowerCase();
+  const rows=visible().filter(i=>!q||(i.no+i.title).toLowerCase().includes(q)).sort((a,b)=>new Date(lastT(b))-new Date(lastT(a)));
+  return `<div class="hello"><div><h1>Track indent</h1><div class="muted">Find an indent and see which step it has reached.</div></div></div>
+   <div class="card"><div class="toolbar"><div class="search" style="max-width:480px">${ic("search",16)}<input class="inp" id="tq" placeholder="Enter an indent number or item name" value="${esc(S.tq)}" aria-label="Track indent"></div></div>
+   ${rows.length?rows.map(i=>{const cur=stepCur(i);return `<button class="lrow" data-act="open" data-id="${i.id}"><div class="grow"><div class="row between wrap"><div><span class="t1">${esc(i.no)}</span> <span class="muted">· ${esc(i.title)}</span></div>${stageChip(i)}</div>
+     <div class="t2">${i.holder&&PEOPLE[i.holder]?"With "+esc(PEOPLE[i.holder].name)+", "+esc(PEOPLE[i.holder].desig):i.stage==="DONE"?"Completed. "+esc(i.po):"Closed"}</div>
+     <div class="mini">${STEPS.map((s,k)=>`<span class="${i.stage==="DONE"||k<cur?"d":k===cur?"c":""}" title="${s}"></span>`).join("")}</div></div></button>`}).join(""):`<div class="empty"><b>No indent found</b>Check the number and try again.</div>`}</div>`;
+}
+
+/* ---- detail ---- */
+function detailView(){
+  const i=byId(S.id);if(!i)return `<div class="empty"><b>Indent not found</b>It may have been deleted.</div>`;
+  return `<div class="crumb"><a data-act="nav" data-to="dash">Dashboard</a> / ${esc(i.no)}</div>
+  <div class="card head"><div class="row between wrap" style="align-items:flex-start;gap:14px"><div>
+     <div class="row wrap" style="gap:8px"><h1>${esc(i.title)}</h1>${stageChip(i)}</div>
+     <div class="muted mt8">${esc(i.no)} · ${esc(i.form)}${i.gem?" · GeM purchase":""}</div></div>
+     <button class="btn ${i.stage==="DONE"?"":"sec"}" data-act="record">${ic("file",16)}${i.stage==="DONE"?"View final record":"Preview form"}</button></div>
+   <div class="meta"><div><span>Indenter</span><b>${esc(PEOPLE[i.by]?PEOPLE[i.by].name:"Indenter")}</b></div><div><span>Amount</span><b class="tnum">${inr(i.total)}</b></div>
+     <div><span>Currently with</span><b>${i.holder&&PEOPLE[i.holder]?esc(PEOPLE[i.holder].name)+", "+esc(PEOPLE[i.holder].desig):i.stage==="DONE"?"Completed":"No one"}</b></div>
+     <div><span>Last update</span><b>${fmt(lastT(i))}</b></div>${i.po?`<div><span>Purchase order</span><b>${esc(i.po)}</b></div>`:""}</div>
+   ${stepper(i)}</div>
+  <div class="cols"><div>
+    <div class="cardtabs" role="tablist">${["details:Form details","docs:Documents ("+i.docs.length+")","history:History ("+i.history.length+")"].map(t=>{const[k,l]=t.split(":");return `<button class="${S.tab===k?"on":""}" data-act="tab" data-k="${k}">${l}</button>`}).join("")}</div>
+    ${S.tab==="details"?detailsTab(i):S.tab==="docs"?docsTab(i):historyTab(i)}
+  </div><aside class="panel" id="panel">${panelHTML(i)}</aside></div>`;
+}
+function stepper(i){
+  const cur=stepCur(i);
+  return `<div class="stepper" role="list">`+STEPS.map((s,k)=>{
+    let cls=k<cur?"done":k===cur?"cur":"";
+    if(k===cur&&i.stage==="RETURNED")cls="cur warn";if(k===cur&&i.stage==="REJECTED")cls="cur bad";
+    const sub=k===cur&&i.holder&&PEOPLE[i.holder]?PEOPLE[i.holder].name.replace(/^(Dr\.|Prof\.)\s*/,""):(k===5&&i.po?i.po:"");
+    return `<div class="step ${cls}" role="listitem"><div class="c">${cls.includes("done")?ic("check",14):cls.includes("bad")?ic("x",14):k+1}</div>${s}<small>${esc(sub)}</small></div>`}).join("")+`</div>`;
+}
+const kv=p=>`<div class="kv">${p.map(([k,v,f])=>`<div class="${f?"full":""}"><span>${k}</span><b>${v||"<span>Not provided</span>"}</b></div>`).join("")}</div>`;
+function signBox(label,s,fb){
+  if(s&&PEOPLE[s.pid]){const p=PEOPLE[s.pid];return `<div class="sign ok"><span>${label}</span><b>${esc(p.name)}</b><i>Signed ${fmt(s.t)}</i></div>`}
+  return `<div class="sign"><span>${label}</span><i>${fb||"Not signed yet"}</i></div>`;
+}
+function detailsTab(i){
+  const sg=i.signs,showPO=i.poData||i.po||ST[i.stage].step>=5;
+  return `<div class="card sec ind mb16"><div class="sh">Indenter part</div><div class="sb">${kv([["Name of item",esc(i.title)],["Approx. cost",inr(i.total)],["Category",esc(i.cat)],["Budget head",esc(i.budgetHead)],["Purpose",esc(i.purpose),1],
+     ["Budgetary approval enclosed",i.approvalEnclosed],["Goods needed for research",i.research],["Installation by supplier",i.install],["GeM purchase",i.gem?"Yes":"No"],["Consignee",esc(i.consignee.name)+", "+esc(i.consignee.addr),1],
+     ["Mode of enquiry",esc(i.modes.join(", "))],["Quotations received",i.nQuotes],["Vendor (M/s)",esc(i.vendor)],["Quotation no. and date",esc(i.qno)+", "+esc(i.qdate)],["Mode of payment",esc(i.pay)],["Delivery period",esc(i.delivery)]])}
+    <table class="items"><thead><tr><th>S. no.</th><th>Description</th><th class="r">Qty</th><th class="r">Rate</th><th class="r">Amount</th></tr></thead><tbody>
+     ${i.items.map((x,k)=>`<tr><td>${k+1}</td><td>${esc(x.d)}</td><td class="r">${x.q}</td><td class="r tnum">${inr(x.r)}</td><td class="r tnum">${inr(x.q*x.r)}</td></tr>`).join("")}</tbody>
+     <tfoot><tr><td colspan="4" class="r">Tax @ ${i.tax}%</td><td class="r tnum">${inr(i.total-i.sub)}</td></tr><tr><td colspan="4" class="r">Total</td><td class="r tnum">${inr(i.total)}</td></tr></tfoot></table>
+    <div class="signs" style="grid-template-columns:1fr 1fr">${signBox("Signature of the indenter",{pid:i.by,t:i.history[0]?i.history[0].t:ago(0)},"Not submitted")}${signBox("HOD",sg.hod,"Not reviewed yet")}</div></div></div>
+  <div class="card sec acc mb16"><div class="sh">Accounts part ${i.acct?`<span class="chip c-green">Filled</span>`:`<span class="chip c-gray">Not filled</span>`}</div><div class="sb">
+    ${i.acct?kv([["Budget head",esc(i.acct.head)],["Budget sanctioned",inr(i.acct.sanctioned)],["Budget available",inr(i.acct.available)],["Budget booked",inr(i.acct.booked)],["Balance budget",inr(i.acct.available-i.acct.booked)],["Filled by",esc(PEOPLE[i.acct.by]?PEOPLE[i.acct.by].name:"Accounts")] ]):`<div class="muted">Accounts fills this part after HOD approval.</div>`}
+    <div class="signs">${signBox("JAA/SAA",(sg.acct||{}).a_low,"Skipped or pending")}${signBox("JAO/AO",(sg.acct||{}).a_mid,"Skipped or pending")}${signBox("AR/DR/JR",(sg.acct||{}).a_top,"Pending")}</div></div></div>
+  <div class="card sec pur mb16"><div class="sh">Purchase part ${i.pur?`<span class="chip c-green">Filled</span>`:`<span class="chip c-gray">Not filled</span>`}</div><div class="sb">
+    ${i.pur?kv([["Quotation signed by indenter",i.pur.quote?"Yes":"No"],["Calculations checked",i.pur.calc?"Yes, in order":"No"],["Purchase proposal in order",i.pur.order?"Yes":"No"],["Pages",esc(i.pur.pages)],["Financial sanction sought",inr(i.pur.cfa)],["Filled by",esc(PEOPLE[i.pur.by]?PEOPLE[i.pur.by].name:"Purchase")] ]):`<div class="muted">Purchase fills this part after Accounts.</div>`}
+    <div class="signs">${signBox("OA/JA/SA",(sg.pur||{}).p_low,"Skipped or pending")}${signBox("JS/Supdt.",(sg.pur||{}).p_mid,"Skipped or pending")}${signBox("AR/DR/JR",(sg.pur||{}).p_top,"Pending")}</div></div></div>
+  <div class="card sec fin mb16"><div class="sh">Final approval</div><div class="sb"><div class="signs" style="grid-template-columns:1fr">${signBox("HOD / Registrar",sg.fin,i.stage==="REJECTED"?"Rejected":"Not approved yet")}</div></div></div>
+  ${showPO?`<div class="card sec fin"><div class="sh">Purchase order ${i.po?`<span class="chip c-solidgreen">${esc(i.po)}</span>`:i.poData?`<span class="chip c-green">Filled</span>`:`<span class="chip c-gray">Not filled</span>`}</div><div class="sb">
+    ${i.poData?kv([["PO date",esc(i.poData.date)],["Supplier (M/s)",esc(i.poData.vendor)],["Deliver to",esc(i.poData.deliverTo)],["Deliver by",esc(i.poData.deliveryBy)],["Payment terms",esc(i.poData.payment)],["Other terms",esc(i.poData.terms)],["Filled by",esc(PEOPLE[i.poData.by]?PEOPLE[i.poData.by].name:"Purchase")] ]):`<div class="muted">Purchase fills the PO form after final approval.</div>`}
+    <div class="signs">${signBox("OA/JA/SA",(sg.po||{}).p_low,"Skipped or pending")}${signBox("JS/Supdt.",(sg.po\vert{}\vert{}{}).p_mid,"Skipped or pending")}${signBox("AR/DR/JR",(sg.po||{}).p_top,"Pending")}</div></div></div>`:""}`;
+}
+function docsTab(i){
+  return `<div class="card"><div class="sh sec" style="padding:12px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center"><b style="font-family:var(--serif);color:var(--navy)">Attached documents</b>
+   <button class="btn sec sm" data-act="adddoc">${ic("upload",14)}Attach a file</button></div>
+   <ul class="docs">${i.docs.map(d=>`<li><div class="ico">${ic("file",18)}</div><div class="grow"><b>${esc(d.n)}</b><div class="xs muted">${esc(d.s)} · added by ${esc(PEOPLE[d.by]?PEOPLE[d.by].name:d.by)}</div></div><span class="chip c-gray">PDF</span></li>`).join("")}</ul></div>`;
+}
+function historyTab(i){
+  const cls={g:"g",o:"o",r:"r",y:""};
+  return `<div class="card"><ol class="tl">${[...i.history].reverse().map(h=>{const p=PEOPLE[h.pid]||{name:"User",desig:""};return `<li class="${cls[h.type]\vert{}\vert{}""}"><div><b>${esc(p.name)}</b> <span class="muted small">${esc(p.desig)}</span></div>
+   <div>${esc(h.text)}</div>${h.remark?`<div class="rem">${esc(h.remark)}</div>`:""}<div class="xs muted mt8">${fmt(h.t)}</div></li>`}).join("")}</ol></div>`;
+}
+
+/* ---- action panel ---- */
+function panelHTML(i){
+  const u=me();
+  if(i.stage==="DONE")return `<div class="card pad"><span class="chip c-solidgreen">Approved</span><h3 class="mt8">Purchase order ${esc(i.po)} created</h3><p class="muted small">Generated on ${fmt(i.signs.po&&i.signs.po.p_top?i.signs.po.p_top.t:lastT(i))}. The final record has every part and signature.</p><button class="btn" style="width:100%" data-act="record">${ic("file",16)}View final record</button></div>`;
+  if(i.stage==="REJECTED")return `<div class="card pad"><span class="chip c-red">Rejected</span><p class="small muted mt8">This indent was rejected. See the History tab for the reason.</p></div>`;
+  if(i.holder!==u.id){
+    const h=PEOPLE[i.holder]||{name:"Officer",desig:""};
+    return `<div class="card wait"><div class="row" style="gap:14px"><div class="av y">${initials(h.name)}</div><div><div class="xs muted">Waiting for</div><b>${esc(h.name)}</b><div class="small muted">${esc(h.desig)}</div></div></div>
+     <div class="alert info mt16">${ic("clock",18)}<span>${u.tiers.includes("ind")?"You will see it here when it moves.":"You can act only on indents that are with you."}</span></div></div>`;
+  }
+  if(i.stage==="RETURNED"||i.stage==="DRAFT"){
+    const last=[...i.history].reverse().find(h=>h.type==="o");
+    return `<div class="card ap"><div class="ah"><h3>${i.stage==="DRAFT"?"Finish your draft":"Fix and send again"}</h3></div><div class="ab">
+      ${last?`<div class="alert warn">${ic("undo",18)}<span><b>${esc(PEOPLE[last.pid]?PEOPLE[last.pid].name:"Reviewer")} sent this back.</b><br>${esc(last.remark)}</span></div>`:""}
+      <button class="btn gold" data-act="editind">Edit and resubmit</button></div></div>`;
+  }
+  const st=ST[i.stage],b=btnState(i),sec=st.sec,d=sec?secData(i,sec):null;
+  const bt=(k,cls,icon,label,extra="")=>`<button class="btn ${cls} ${extra}" data-act="btn" data-k="${k}" ${b[k].on?"":`disabled aria-disabled="true"`} title="${esc(b[k].on?"":b[k].why)}">${ic(icon,16)}${label}</button>`;
+  let hint="";
+  if(!b.approve.on)hint=`Approve turns on after you fill the ${SECNAME[sec]} part. Press Fill form to open it.`;
+  else if(st.appr&&st.appr.gen)hint="The purchase order is filled. Press Generate PO to finish.";
+  return `<div class="card ap"><div class="ah"><h3>Your action</h3><div class="xs" style="color:#1E40AF">${esc(i.no)} · ${esc(st.lbl)}</div></div><div class="ab">
+   ${sec?`<div class="sstat ${d?"ok":""}"><span>${SECNAME[sec]} part</span>${d?`<span class="chip c-green">Filled by ${esc((PEOPLE[d.by]?PEOPLE[d.by].name:"User").split(" ")[0])}</span>`:`<span class="chip c-gray">Not filled</span>`}</div>`:""}
+   ${bt("approve","gold","check",b.approve.label,"big")}
+   <div class="two">${bt("forward","sec","send","Forward")}${bt("fill","sec","edit",b.fill.label)}</div>
+   <div class="two">${bt("revise","sec","undo","Revise")}${bt("reject","danger","x","Reject")}</div>
+   ${hint?`<div class="alert info">${ic("info",18)}<span>${hint}</span></div>`:""}
+  </div></div>`;
+}
+
+/* ---- modal dialogs ---- */
+let DLG=null;
+function dialog(cfg){
+  DLG={cfg,target:null,remarks:"",pw:"",opt:cfg.opts?(cfg.defaultOpt||cfg.opts[0].id):null};
+  const g=currentGroups();if(g)DLG.target=autoPick(g,cfg.prefer);
+  drawDlg();
+}
+const currentGroups=()=>{const c=DLG.cfg;return c.opts?c.listFor(DLG.opt):c.groups||null};
+function autoPick(groups,prefer){
+  const ppl=groups.flatMap(g=>g.ppl).filter(p=>p.avail);
+  const pref=(prefer||[]).slice().reverse().find(id=>ppl.some(p=>p.id===id));
+  return pref||(ppl.length===1?ppl[0].id:null);
+}
+const personBtn=(p,on)=>`<button type="button" class="person ${on?"on":""}" ${p.avail?"":"disabled"} data-dp="${p.id}" aria-pressed="${on}"><div class="av ${avc(p)}">${initials(p.name)}</div><div><div class="nm">${esc(p.name)}</div><div class="ds">${esc(p.desig)}</div></div><div class="st ${p.avail?"on":"off"}"><span class="dot"></span>${p.avail?"Available":"On leave"}</div></button>`;
+function drawDlg(){
+  const c=DLG.cfg,groups=currentGroups();
+  $("#modal").innerHTML=`<div class="ov" data-act="ovclose"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
+   <div class="mh"><h2 id="mt">${c.title}</h2></div><div class="mb"><div class="sum">${c.lines.map(l=>`<div>${l}</div>`).join("")}</div>
+   ${c.opts?`<div class="lbl mb8">${c.optHeading}</div>${c.opts.map(o=>`<label class="ropt ${DLG.opt===o.id?"on":""}"><input type="radio" name="dopt" value="${o.id}" ${DLG.opt===o.id?"checked":""}><div><b>${o.label}</b><span>${o.desc}</span></div></label>`).join("")}`:""}
+   ${groups?`<div class="field" id="tgField" style="margin-top:6px"><div class="lbl">${c.heading}</div>${groups.length?groups.map(g=>`${g.label?`<div class="gl">${g.label}</div>`:""}${g.ppl.map(p=>personBtn(p,DLG.target===p.id)).join("")}`).join(""):`<div class="muted small">No one is available for this step.</div>`}
+     <div class="err" id="tgErr">Pick one person to continue.</div></div>`:""}
+   <div class="field" id="remField"><label class="lbl" for="drem">Remarks ${c.needRem?"(required)":"(optional)"}</label><textarea class="txt" id="drem" placeholder="${esc(c.remPh||"Add a note for the next person.")}">${esc(DLG.remarks)}</textarea><div class="err" id="remErr">${esc(c.remErr||"Add a remark.")}</div></div>
+   <div class="field" id="pwField"><label class="lbl" for="cpw">Confirm with your password</label><div class="pwd">${ic("lock",16)}<input class="inp" id="cpw" type="password" autocomplete="current-password" placeholder="Your password" value="${esc(DLG.pw)}"></div><div class="err" id="pwErr">Enter your password to confirm.</div></div>
+   <div class="xs muted">Your name, role and time are saved. Demo mode: any password works.</div></div>
+   <div class="mf"><button class="btn sec" data-act="closemodal">Cancel</button><button class="btn ${c.danger?"danger":c.gold?"gold":""}" id="dlgOk">${c.btn}</button></div></div></div>`;
+  setTimeout(()=>{const t=$("#drem")&&!c.groups&&!c.opts&&c.needRem?$("#drem"):$("#cpw");if(t&&!c.groups&&!c.opts)t.focus({preventScroll:true})},30);
+}
+function dlgSubmit(){
+  const c=DLG.cfg,groups=currentGroups();DLG.remarks=$("#drem").value.trim();DLG.pw=$("#cpw").value;
+  let bad=false;
+  if(groups){const ok=!!DLG.target;$("#tgField").classList.toggle("bad",!ok);if(!ok)bad=true}
+  if(c.needRem){const ok=!!DLG.remarks;$("#remField").classList.toggle("bad",!ok);if(!ok)bad=true}
+  if(!DLG.pw){$("#pwField").classList.add("bad");bad=true}else $("#pwField").classList.remove("bad");
+  if(bad)return;
+  const r={target:DLG.target&&PEOPLE[DLG.target],remarks:DLG.remarks,opt:DLG.opt};
+  closeModal();c.onOk(r);
+}
+const closeModal=()=>{$("#modal").innerHTML="";DLG=null};
+function toast(msg){const t=$("#toast");t.innerHTML=`<div class="toast">${ic("check",18)}<span>${esc(msg)}</span></div>`;clearTimeout(toast.t);toast.t=setTimeout(()=>t.innerHTML="",3600)}
+const sumLines=i=>[`<b>${esc(i.no)}</b> · ${esc(i.title)}`,`Amount: ${inr(i.total)}`];
+const tp2=p=>`${p.name}, ${p.desig}`;
+
+/* ---- workflow actions ---- */
+function pressButton(k){
+  const i=byId(S.id),st=ST[i.stage],b=btnState(i);
+  if(!b[k].on)return;
+  if(k==="fill"){go("fill");return}
+  const trailIds=i.trail.map(t=>t.pid);
+  if(k==="approve"){
+    if(st.appr.gen)return dialog({title:"Generate purchase order",lines:[...sumLines(i),"A purchase order number is created and the indent is completed."],btn:"Generate PO",gold:1,remPh:"Optional note for the record.",onOk:r=>generatePO(i,r)});
+    return dialog({title:st.appr.title,lines:sumLines(i),heading:"Send to",groups:groupsFor(st.appr.to,i),prefer:trailIds,btn:st.appr.label||"Approve",gold:1,onOk:r=>doApprove(i,r)});
+  }
+  if(k==="forward")return dialog({title:"Forward to a lower official",lines:[...sumLines(i),"They fill their part or send it further down. It comes back to you."],heading:"Forward to",groups:groupsFor(st.fwd,i),prefer:trailIds,btn:"Forward",onOk:r=>doForward(i,r)});
+  if(k==="revise"){
+    const seen=new Set([S.user]),ppl=[];
+    const ind=PEOPLE[i.by]||{id:i.by,name:"Indenter",desig:""};seen.add(ind.id);
+    i.trail.forEach(t=>{if(!seen.has(t.pid)&&PEOPLE[t.pid]){seen.add(t.pid);ppl.push(PEOPLE[t.pid])}});
+    return dialog({title:"Revise: send back for correction",lines:sumLines(i),heading:"Send back to anyone earlier in the path",groups:[{label:"Indenter",ppl:[ind]},...(ppl.length?[{label:"Earlier in the path",ppl}]:[])],needRem:1,remErr:"Tell them what to change.",remPh:"What needs to be corrected?",btn:"Send back",onOk:r=>doRevise(i,r)});
+  }
+  if(k==="reject")return dialog({title:"Reject this indent",lines:[...sumLines(i),"The indenter will see the rejection and your reason."],needRem:1,remErr:"Give the reason for rejecting.",remPh:"Why is this indent rejected?",danger:1,btn:"Reject",onOk:r=>doReject(i,r)});
+}
+const groupsFor=(tiers,i)=>tiers.map(t=>({label:TIER_LABEL[t],ppl:peopleFor([t],i).filter(p=>p.id!==S.user)})).filter(g=>g.ppl.length);
+function setSign(i,u,now){
+  const st=ST[i.stage];
+  if(i.stage==="HOD")i.signs.hod={pid:u.id,t:now};
+  else if(i.stage==="FINAL")i.signs.fin={pid:u.id,t:now};
+  else if(st.sec){i.signs[st.sec]=i.signs[st.sec]||{};i.signs[st.sec][st.tier]={pid:u.id,t:now}}
+}
+function doApprove(i,r){
+  const u=me(),st=ST[i.stage],now=new Date().toISOString(),tp=r.target;
+  setSign(i,u,now);
+  const text=i.stage==="HOD"?`Approved and sent to ${tp2(tp)}`:i.stage==="FINAL"?`Approved and sent back to ${tp2(tp)} for the purchase order`:
+    st.appr.label?`Sent back to ${tp2(tp)}`:st.appr.next&&ST[st.appr.next].step===st.step&&ST[st.appr.next].tier!==st.tier&&["a_mid","a_top","p_mid","p_top"].includes(ST[st.appr.next].tier)?`Approved and sent back to ${tp2(tp)}`:`Approved and sent to ${tp2(tp)}`;
+  i.history.push({pid:u.id,type:"g",text,remark:r.remarks,t:now});
+  i.trail.push({pid:u.id,stage:i.stage});i.holder=tp.id;i.stage=st.appr.next;
+  saveStorage();
+  toast(`Sent to ${tp.name}`);S.view="dash";S.filter="pending";render();window.scrollTo(0,0);
+}
+function doForward(i,r){
+  const u=me(),st=ST[i.stage],tp=r.target,now=new Date().toISOString();
+  const tier=st.fwd.find(t=>tp.tiers.includes(t));
+  const skip=(i.stage==="A_TOP"&&tier==="a_low")?", skipping JAO/AO":(i.stage==="P_TOP"&&tier==="p_low")?", skipping JS/Supdt.":(i.stage==="PO_TOP"&&tier==="p_low")?", skipping JS/Supdt.":"";
+  i.history.push({pid:u.id,type:"y",text:`Forwarded to ${tp2(tp)}${skip}`,remark:r.remarks,t:now});
+  i.trail.push({pid:u.id,stage:i.stage});i.holder=tp.id;i.stage=STG[st.sec][tier];
+  saveStorage();
+  toast(`Forwarded to ${tp.name}`);S.view="dash";S.filter="pending";render();window.scrollTo(0,0);
+}
+function doRevise(i,r){
+  const u=me(),tp=r.target,now=new Date().toISOString();
+  i.history.push({pid:u.id,type:"o",text:`Sent back for revision to ${tp2(tp)}`,remark:r.remarks,t:now});
+  const k=i.trail.findIndex(t=>t.pid===tp.id);
+  if(tp.id===i.by||k<0){i.stage="RETURNED";i.holder=i.by;i.trail=[]}
+  else{const e=i.trail[k];i.stage=e.stage;i.holder=e.pid;i.trail=i.trail.slice(0,k)}
+  saveStorage();
+  toast(`Sent back to ${tp.name}`);S.view="dash";S.filter="pending";render();window.scrollTo(0,0);
+}
+function doReject(i,r){
+  const u=me();
+  i.history.push({pid:u.id,type:"r",text:"Rejected the indent",remark:r.remarks,t:new Date().toISOString()});
+  i.rejIdx=ST[i.stage].step;i.stage="REJECTED";i.holder=null;
+  saveStorage();
+  toast("Indent rejected");S.view="dash";render();window.scrollTo(0,0);
+}
+function generatePO(i,r){
+  const u=me(),now=new Date().toISOString();
+  setSign(i,u,now);i.po="PO/2026/"+String(430+Math.floor(Math.random()*60)).padStart(4,"0");
+  i.history.push({pid:u.id,type:"g",text:`Generated purchase order ${i.po}`,remark:r.remarks,t:now});
+  i.stage="DONE";i.holder=null;
+  saveStorage();
+  toast(`${i.po} generated`);render();
+}
+
+/* ---- fill form views ---- */
+const ff=(label,name,val,o={})=>`<div class="field"><label class="lbl ${o.req?"req":""}">${label}</label>${o.area?`<textarea class="txt" data-ff="${name}" ${o.dis?"disabled":""} placeholder="${esc(o.ph\vert{}\vert{}"")}">${esc(val)}</textarea>`:`<input class="inp" data-ff="${name}" type="${o.type||"text"}" ${o.type==="number"?'min="0"':""} ${o.dis||o.ro?(o.dis?"disabled":"readonly"):""} value="${esc(val)}" placeholder="${esc(o.ph||"")}">`}<div class="err">${esc(o.err||"This field is required.")}</div></div>`;
+const chkf=(name,label,on,dis)=>`<label class="chk"><input type="checkbox" data-ff="${name}" ${on?"checked":""} ${dis?"disabled":""}><span>${label}</span></label>`;
+
+function secAcct(d,dis,i){
+  d=d||{};const v=(k,f="")=>d[k]!==undefined?d[k]:f,a=Number(v("available",0)),b=Number(v("booked",0));
+  return `<div class="g2">${ff("Budget head","head",v("head",i?i.budgetHead:""),{dis,req:1})}${ff("Budget sanctioned (₹)","sanctioned",v("sanctioned",i?i.sanctioned:""),{dis,type:"number",req:1})}
+   ${ff("Budget available (₹)","available",v("available"),{dis,type:"number",req:1,ph:dis?"":"Enter amount"})}${ff("Budget booked (₹)","booked",v("booked",i?i.total:""),{dis,type:"number",req:1})}</div>
+   <div class="bal"><span>Balance budget</span><span id="balOut" class="tnum">${dis||v("available")===""?"Shown after you fill the amounts":inr(a-b)}</span></div>`;
+}
+function secPur(d,dis,i){
+  d=d||{};const v=(k,f="")=>d[k]!==undefined?d[k]:f;
+  return `<div class="field" data-fw="checks"><div class="lbl req">Checks</div>${chkf("quote","Quotation is signed by the indenter",v("quote",false),dis)}${chkf("calc","Calculations are checked and found in order",v("calc",false),dis)}${chkf("order","Purchase proposal is in order",v("order",false),dis)}<div class="err">Tick all three checks before you sign this part.</div></div>
+   <div class="g2">${ff("Proposal pages (from to)","pages",v("pages"),{dis,req:1,ph:dis?"":"e.g. 1 to 4"})}${ff("Financial sanction sought (₹)","cfa",v("cfa",i?i.total:""),{dis,type:"number",req:1})}</div>`;
+}
+function secPO(d,dis,i){
+  d=d||{};const v=(k,f="")=>d[k]!==undefined?d[k]:f;
+  return `<div class="g2">${ff("PO date","date",v("date","2026-10-07"),{dis,type:"date",req:1})}${ff("Supplier (M/s)","vendor",v("vendor",i?i.vendor:""),{dis,ro:1})}
+   ${ff("Deliver to","deliverTo",v("deliverTo",i?i.consignee.addr:""),{dis,req:1})}${ff("Deliver by","deliveryBy",v("deliveryBy",i?i.delivery:""),{dis,req:1})}
+   ${ff("Payment terms","payment",v("payment",i?i.pay:""),{dis,req:1})}</div>${ff("Other terms (optional)","terms",v("terms"),{dis,area:1,ph:"Warranty, installation, penalties"})}`;
+}
+function secInd(i){
+  const ro=(l,v)=>`<div class="field"><label class="lbl">${l}</label><input class="inp" disabled value="${esc(v)}"></div>`;
+  return `<div class="g2">${ro("Indenter",(PEOPLE[i.by]?PEOPLE[i.by].name:"Indenter") + ", " + (PEOPLE[i.by]?PEOPLE[i.by].desig:""))}${ro("Name of the item",i.title)}${ro("Budget head",i.budgetHead)}${ro("Approx. cost",inr(i.total))}${ro("Vendor (M/s)",i.vendor)}${ro("Quotation",i.qno+", "+i.qdate)}</div>
+   <div class="field"><label class="lbl">Purpose</label><textarea class="txt" disabled>${esc(i.purpose)}</textarea></div>
+   <table class="items"><thead><tr><th>S. no.</th><th>Description</th><th class="r">Qty</th><th class="r">Rate</th><th class="r">Amount</th></tr></thead><tbody>${i.items.map((x,k)=>`<tr><td>${k+1}</td><td>${esc(x.d)}</td><td class="r">${x.q}</td><td class="r tnum">${inr(x.r)}</td><td class="r tnum">${inr(x.q*x.r)}</td></tr>`).join("")}</tbody></table>`;
+}
+function fillCard(cls,title,editing,body,note){
+  return `<div class="card sec ${cls} ${editing?"editing":"lockd"} fsec" ${editing?"data-edit":""}><div class="sh"><span>${title}</span>${editing?`<span class="chip c-amber">You are editing this part</span>`:`<span class="lockchip">${ic("lock",13)}Locked${note?" · "+esc(note):""}</span>`}</div><div class="sb">${body}</div></div>`;
+}
+function fillView(){
+  const i=byId(S.id);if(!i||i.holder!==S.user||!ST[i.stage].sec){return `<div class="empty"><b>Nothing to fill</b>This indent is not waiting for you.</div>`}
+  const sec=ST[i.stage].sec,showPO=sec==="po"||i.poData;
+  const by=k=>i[k]?"Filled by "+(PEOPLE[i[k].by]?PEOPLE[i[k].by].name:"Officer"):"Not filled yet";
+  return `<div class="crumb"><a data-act="nav" data-to="dash">Dashboard</a> / <a data-act="fillcancel">${esc(i.no)}</a> / Fill form</div>
+   <div class="newtab">${ic("file",20)}<div><b>Form opened · ${esc(i.no)} · ${esc(i.form)}</b><div class="small muted">Only the ${SECNAME[sec]} part can be edited. After you save, this tab closes and the indent page updates.</div></div></div>
+   ${fillCard("ind","Indenter part",false,secInd(i),"filled by "+(PEOPLE[i.by]?PEOPLE[i.by].name:"Indenter"))}
+   ${fillCard("acc","Accounts part",sec==="acct",secAcct(i.acct,sec!=="acct",i),sec==="acct"?"":by("acct"))}
+   ${fillCard("pur","Purchase part",sec==="pur",secPur(i.pur,sec!=="pur",i),sec==="pur"?"":by("pur"))}
+   ${showPO?fillCard("fin","Purchase order",sec==="po",secPO(i.poData,sec!=="po",i),sec==="po"?"":by("poData")):""}`;
+}
+const fillBar=()=>`<div class="stickybar"><div class="in"><div class="muted small">Your changes are saved to the indent when you press Save and close.</div><div class="row"><button class="btn sec" data-act="fillcancel">Cancel</button><button class="btn gold" data-act="fillsave">${ic("check",16)}Save and close</button></div></div></div>`;
+
+function initFill(){
+  const calcBal=()=>{
+    const av=$('[data-ff="available"]'), bk=$('[data-ff="booked"]'), out=$("#balOut");
+    if(av&&bk&&out){
+      const a=parseFloat(av.value)||0, b=parseFloat(bk.value)||0;
+      out.textContent=inr(a-b);
+    }
+  };
+  const av=$('[data-ff="available"]'), bk=$('[data-ff="booked"]');
+  if(av&&bk){ av.addEventListener("input",calcBal); bk.addEventListener("input",calcBal); }
+}
+
+function saveFillData(){
+  const i=byId(S.id), sec=ST[i.stage].sec;
+  if(sec==="acct"){
+    const h=$('[data-ff="head"]').value.trim(), s=parseFloat($('[data-ff="sanctioned"]').value)||0, a=parseFloat($('[data-ff="available"]').value)\vert{}\vert{}0, b=parseFloat($('[data-ff="booked"]').value)||0;
+    if(!h||isNaN(a)){ toast("Please enter valid budget details."); return; }
+    i.acct={head:h,sanctioned:s,available:a,booked:b,by:S.user,t:new Date().toISOString()};
+  } else if(sec==="pur"){
+    const q=$('[data-ff="quote"]').checked, c=$('[data-ff="calc"]').checked, o=$('[data-ff="order"]').checked, p=$('[data-ff="pages"]').value.trim(), cfa=parseFloat($('[data-ff="cfa"]').value)||0;
+    if(!q||!c||!o){ toast("Please confirm all check items."); return; }
+    i.pur={quote:q,calc:c,order:o,pages:p||"1 to 4",cfa,by:S.user,t:new Date().toISOString()};
+  } else if(sec==="po"){
+    const dt=$('[data-ff="date"]').value, delTo=$('[data-ff="deliverTo"]').value.trim(), delBy=$('[data-ff="deliveryBy"]').value.trim(), pay=$('[data-ff="payment"]').value.trim(), trm=$('[data-ff="terms"]').value.trim();
+    i.poData={date:dt,vendor:i.vendor,deliverTo:delTo,deliveryBy:delBy,payment:pay,terms:trm,by:S.user,t:new Date().toISOString()};
+  }
+  saveStorage();
+  toast("Section saved successfully.");
+  go("detail", i.id);
+}
+
+/* ---- formView (Create / Edit Indent) ---- */
+let FORM_ITEMS=[{d:"",q:1,r:0}];
+function formView(){
+  const u=me();
+  return `<div class="crumb"><a data-act="nav" data-to="dash">Dashboard</a> / Create new indent</div>
+  <div class="formhead"><div><h1>Create Purchase Indent</h1><div class="muted">Fill out the requisition form to send to HOD for approval.</div></div>
+    <div class="seg"><button class="${S.formType==="SPS-101"?"on":""}" data-act="setft" data-v="SPS-101">SPS-101 (General)</button><button class="${S.formType==="SPS-101(R)"?"on":""}" data-act="setft" data-v="SPS-101(R)">SPS-101(R) (Research)</button></div></div>
+  <div class="card pad mb16"><h3>1. General details</h3>
+    <div class="g2 mt16">
+      <div class="field"><label class="lbl req">Title / Major item name</label><input class="inp" id="f_title" placeholder="e.g. Oscilloscope 100MHz"></div>
+      <div class="field"><label class="lbl req">Category</label><select class="sel" id="f_cat"><option value="Non-consumables">Non-consumables</option><option value="Consumables">Consumables</option></select></div>
+    </div>
+    <div class="g2">
+      <div class="field"><label class="lbl req">Budget head</label><input class="inp" id="f_bhead" value="Departmental grant, ${u.dept}"></div>
+      <div class="field"><label class="lbl req">Sanctioned budget (₹)</label><input class="inp" id="f_sanc" type="number" value="500000"></div>
+    </div>
+    <div class="field"><label class="lbl req">Purpose / Justification</label><textarea class="txt" id="f_purp" placeholder="Describe why this purchase is required..."></textarea></div>
+  </div>
+
+  <div class="card pad mb16"><h3>2. Line items & vendor quote</h3>
+    <table class="items itemtbl mt16" id="f_tbl"><thead><tr><th>Description</th><th style="width:90px" class="r">Qty</th><th style="width:130px" class="r">Rate (₹)</th><th style="width:130px" class="r">Amount</th><th style="width:40px"></th></tr></thead>
+    <tbody id="f_tbody"></tbody></table>
+    <button class="btn sec sm mt8" data-act="additem">${ic("plus",14)}Add item row</button>
+    <div class="totals">
+      <div><span>Subtotal:</span><span id="f_sub" class="tnum">₹0</span></div>
+      <div class="row between"><span>GST Rate:</span><select id="f_gst" class="sel" style="width:80px;padding:2px 6px"><option value="0">0%</option><option value="5">5%</option><option value="12">12%</option><option value="18" selected>18%</option><option value="28">28%</option></select></div>
+      <div class="gt"><span>Total Amount:</span><span id="f_tot" class="tnum">₹0</span></div>
+    </div>
+    <div class="g2 mt16">
+      <div class="field"><label class="lbl req">Vendor name (M/s)</label><input class="inp" id="f_vname" placeholder="e.g. Tek Instruments"></div>
+      <div class="field"><label class="lbl req">Quotation reference & date</label><input class="inp" id="f_qref" placeholder="e.g. TKI/9912 dated 2026-09-30"></div>
+    </div>
+  </div>`;
+}
+const formBar=()=>`<div class="stickybar"><div class="in"><div class="muted small">All required fields marked with * must be filled before submitting.</div><div class="row"><button class="btn sec" data-act="nav" data-to="dash">Cancel</button><button class="btn gold" data-act="submitind">${ic("send",16)}Submit to HOD</button></div></div></div>`;
+
+function initForm(){
+  renderFormRows();
+}
+function renderFormRows(){
+  const tb=$("#f_tbody");if(!tb)return;
+  tb.innerHTML=FORM_ITEMS.map((it,k)=>`<tr>
+    <td><input class="inp" value="${esc(it.d)}" oninput="FORM_ITEMS[${k}].d=this.value"></td>
+    <td><input class="inp tnum" type="number" min="1" value="${it.q}" oninput="FORM_ITEMS[${k}].q=parseFloat(this.value)||0; calcFormTotals()"></td>
+    <td><input class="inp tnum" type="number" min="0" value="${it.r}" oninput="FORM_ITEMS[${k}].r=parseFloat(this.value)||0; calcFormTotals()"></td>
+    <td class="r tnum" style="padding-top:14px">${inr(it.q*it.r)}</td>
+    <td>${FORM_ITEMS.length>1?`<button class="btn danger sm" onclick="FORM_ITEMS.splice(${k},1); renderFormRows(); calcFormTotals()">${ic("trash",14)}</button>`:""}</td>
+  </tr>`).join("");
+  calcFormTotals();
+}
+function calcFormTotals(){
+  const sub=FORM_ITEMS.reduce((s,i)=>s+(i.q*i.r),0);
+  const gstEl=$("#f_gst");
+  const gst=gstEl?parseFloat(gstEl.value)||0:18;
+  const tot=Math.round(sub*(1+gst/100));
+  if($("#f_sub")) $("#f_sub").textContent=inr(sub);
+  if($("#f_tot")) $("#f_tot").textContent=inr(tot);
+}
+
+function submitNewIndent(){
+  const u=me(), title=$("#f_title").value.trim(), cat=$("#f_cat").value, bhead=$("#f_bhead").value.trim(), sanc=parseFloat($("#f_sanc").value)\vert{}\vert{}0, purp=$("#f_purp").value.trim(), vname=$("#f_vname").value.trim(), qref=$("#f_qref").value.trim();
+  if(!title||!purp||!vname){ toast("Please fill in all mandatory fields."); return; }
+  const validItems=FORM_ITEMS.filter(i=>i.d.trim()&&i.q>0&&i.r>0);
+  if(!validItems.length){ toast("Please add at least one item with description, qty, and rate."); return; }
+
+  const hod=hodFor(u);
+  const newInd=mkIndent({
+    no:"IND-2026-0"+(seq+1),
+    title, by:u.id, form:S.formType, cat, purpose:purp, budgetHead:bhead, sanctioned:sanc,
+    research:S.formType.includes("(R)")?"Yes":"No", items:validItems, vendor:vname, qno:qref, stage:"HOD", holder:hod.id,
+    history:[H(u.id,"y","Created the indent and submitted it to HOD","",0)]
+  });
+  IND.unshift(newInd);
+  saveStorage();
+  toast(`Indent ${newInd.no} submitted to HOD ${hod.name}`);
+  go("dash");
+}
+
+/* ---- Admin Views ---- */
+function aindView(){
+  const q=S.aq.trim().toLowerCase();
+  let rows=visible().filter(i=>!q||(i.no+i.title+(PEOPLE[i.by]?PEOPLE[i.by].name:"")).toLowerCase().includes(q));
+  return `<div class="hello"><div><h1>All System Indents</h1><div class="muted">Admin audit view of all purchases across campus.</div></div></div>
+   <div class="card"><div class="toolbar"><div class="search" style="max-width:480px">${ic("search",16)}<input class="inp" id="aq" placeholder="Search by number, item, or staff member" value="${esc(S.aq)}" aria-label="Admin search"></div></div>
+   <div class="tablewrap">${indentTable(rows)}</div></div>`;
+}
+
+function usersView(){
+  const q=S.uq.trim().toLowerCase();
+  const list=Object.values(PEOPLE).filter(p=>!q||(p.name+p.cid+p.dept+p.desig).toLowerCase().includes(q));
+  return `<div class="hello"><div><h1>User Management</h1><div class="muted">Authorize pending users and assign system permissions.</div></div></div>
+  <div class="card"><div class="toolbar"><div class="search" style="max-width:480px">${ic("search",16)}<input class="inp" id="uq" placeholder="Search user accounts" value="${esc(S.uq)}"></div></div>
+  <div class="tablewrap"><table><thead><tr><th>Name / ID</th><th>Designation</th><th>Department</th><th>Role</th><th>Status</th><th>Action</th></tr></thead>
+  <tbody>${list.map(p=>`<tr>
+    <td><b>${esc(p.name)}</b><div class="xs muted">${esc(p.cid)}</div></td>
+    <td>${esc(p.desig)}</td><td>${esc(p.dept)}</td>
+    <td><span class="chip c-blue">${esc(roleLabel(p))}</span></td>
+    <td><span class="chip ${p.status==="authorised"?"c-green":p.status==="pending"?"c-amber":"c-red"}">${esc(p.status)}</span></td>
+    <td>${p.status==="pending"?`<button class="btn sm gold" onclick="PEOPLE['${p.id}'].status='authorised'; toast('User authorised'); render()">Authorise</button>`:`<button class="btn sec sm" onclick="PEOPLE['${p.id}'].status=PEOPLE['${p.id}'].status==='authorised'?'blocked':'authorised'; render()">${p.status==="authorised"?"Block":"Unblock"}</button>`}</td>
+  </tr>`).join("")}</tbody></table></div></div>`;
+}
+
+/* ---- printable record modal ---- */
+function showRecordModal(i){
+  $("#modal").innerHTML=`<div class="ov" data-act="closemodal"><div class="modal record" style="max-width:860px" onclick="event.stopPropagation()">
+    <div class="row between noprint" style="margin-bottom:20px"><h3>Official Purchase Indent Record</h3><div><button class="btn sec sm" onclick="window.print()">${ic("print",16)}Print / Export PDF</button> <button class="btn sec sm" data-act="closemodal">Close</button></div></div>
+    <h2>INDIAN INSTITUTE OF TECHNOLOGY ROPAR</h2><div style="text-align:center;font-size:13px;margin-bottom:18px">STORES & PURCHASE SECTION</div>
+    <table style="width:100%;margin-bottom:14px">
+      <tr><td><b>Indent No:</b> ${esc(i.no)}</td><td><b>Date:</b> ${fmt(i.history[0]?i.history[0].t:ago(0))}</td><td><b>Form:</b> ${esc(i.form)}</td></tr>
+      <tr><td colspan="2"><b>Indenter:</b> ${esc(PEOPLE[i.by]?PEOPLE[i.by].name:"Indenter")}, ${esc(PEOPLE[i.by]?PEOPLE[i.by].desig:"")}</td><td><b>Dept:</b> ${esc(PEOPLE[i.by]?PEOPLE[i.by].dept:"CSE")}</td></tr>
+      <tr><td colspan="3"><b>Item Description:</b> ${esc(i.title)}</td></tr>
+      <tr><td colspan="3"><b>Purpose:</b> ${esc(i.purpose)}</td></tr>
+      <tr><td><b>Vendor:</b> ${esc(i.vendor)}</td><td colspan="2"><b>Quotation Ref:</b> ${esc(i.qno)}</td></tr>
+    </table>
+    <table style="width:100%;margin-bottom:16px"><thead><tr><th>S.N.</th><th>Description</th><th style="text-align:right">Qty</th><th style="text-align:right">Rate</th><th style="text-align:right">Total</th></tr></thead><tbody>
+      ${i.items.map((x,k)=>`<tr><td>${k+1}</td><td>${esc(x.d)}</td><td style="text-align:right">${x.q}</td><td style="text-align:right">${inr(x.r)}</td><td style="text-align:right">${inr(x.q*x.r)}</td></tr>`).join("")}
+      <tr><td colspan="4" style="text-align:right"><b>Grand Total (Incl. Taxes):</b></td><td style="text-align:right"><b>${inr(i.total)}</b></td></tr>
+    </tbody></table>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:20px">
+      <div class="sg"><span>Indenter</span><b>${esc(PEOPLE[i.by]?PEOPLE[i.by].name:"Indenter")}</b><i>Verified</i></div>
+      <div class="sg"><span>HOD</span>${i.signs.hod?`<b>${esc(PEOPLE[i.signs.hod.pid]?PEOPLE[i.signs.hod.pid].name:"HOD")}</b><i>Signed</i>`:"Pending"}</div>
+      <div class="sg"><span>Registrar / Sanction Authority</span>${i.signs.fin?`<b>${esc(PEOPLE[i.signs.fin.pid]?PEOPLE[i.signs.fin.pid].name:"Registrar")}</b><i>Approved</i>`:"Pending"}</div>
+    </div>
+  </div></div>`;
+}
+
+/* ============ event listeners ============ */
+document.addEventListener("click", e=>{
+  const t=e.target.closest("[data-act]");if(!t)return;
+  const act=t.dataset.act;
+  if(act==="nav") go(t.dataset.to);
+  else if(act==="logout"){ S.user=null; S.view="login"; render(); }
+  else if(act==="demoid"){ S.lastCid=t.dataset.cid; if($("#cid")) $("#cid").value=t.dataset.cid; }
+  else if(act==="switch"){ S.user=t.value; render(); }
+  else if(act==="filter"){ S.filter=t.dataset.k; render(); }
+  else if(act==="open"){ go("detail", t.dataset.id); }
+  else if(act==="tab"){ S.tab=t.dataset.k; render(); }
+  else if(act==="btn"){ pressButton(t.dataset.k); }
+  else if(act==="fillcancel"){ go("detail", S.id); }
+  else if(act==="fillsave"){ saveFillData(); }
+  else if(act==="record"){ showRecordModal(byId(S.id)); }
+  else if(act==="closemodal"||act==="ovclose"){ if(e.target===t||act==="closemodal") closeModal(); }
+  else if(act==="setft"){ S.formType=t.dataset.v; render(); }
+  else if(act==="additem"){ FORM_ITEMS.push({d:"",q:1,r:0}); renderFormRows(); }
+  else if(act==="submitind"){ submitNewIndent(); }
+  else if(act==="adddoc"){
+    const i=byId(S.id);
+    i.docs.push({n:"Attached-Quote-Ref-"+Math.floor(Math.random()*1000)+".pdf",s:"145 KB",by:S.user});
+    saveStorage();
+    toast("Document attached."); render();
+  }
+});
+
+document.addEventListener("input", e=>{
+  if(e.target.id==="q"){ S.q=e.target.value; render(); }
+  else if(e.target.id==="tq"){ S.tq=e.target.value; render(); }
+  else if(e.target.id==="aq"){ S.aq=e.target.value; render(); }
+  else if(e.target.id==="uq"){ S.uq=e.target.value; render(); }
+});
+
+document.addEventListener("change", e=>{
+  if(e.target.name==="dopt"&&DLG){ DLG.opt=e.target.value; drawDlg(); }
+});
+
+document.addEventListener("click", e=>{
+  const p=e.target.closest("[data-dp]");
+  if(p&&DLG){ DLG.target=p.dataset.dp; drawDlg(); }
+  if(e.target.id==="dlgOk"){ dlgSubmit(); }
+});
+
+/* Initialize */
+S.user="p_ind";
+go("dash");
+</script>
+</body>
+</html>

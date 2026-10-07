@@ -1,0 +1,12 @@
+{
+  "name": "purchase-indent-system",
+  "version": "1.0.0",
+  "description": "Purchase Indent System for IIT Ropar Stores & Purchase",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
